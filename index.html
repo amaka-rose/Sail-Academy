@@ -219,6 +219,9 @@ th{ font-size:12px; color:#5b7184; }
 .vk span:last-child{ color:#1565c0; font-weight:600; }
 
 
+/* ---- archivio ---- */
+.arRace{ border-bottom:1px solid #e6eef5; padding:8px 4px; cursor:pointer; } .arRace.open{ background:#f4f9fd; border-radius:10px; }
+.arRace table{ margin-top:6px; } table.lg th{ text-align:left; font-size:12px; color:#5b7186; padding:4px 6px; }
 /* ---- progressi ---- */
 .card.prog{ padding:12px 14px; }
 .pgTop{ display:flex; align-items:center; gap:10px; }
@@ -253,7 +256,7 @@ table.lg tr.me{ background:#fff6d6; }
   <path d="M58 8 L58 66 L22 66 Z" fill="url(#sl)"/><path d="M62 16 L62 66 L92 66 Z" fill="#ffb300"/><path d="M14 70 L100 70 L90 80 L26 80 Z" fill="#e53935"/>
   <path d="M0 84 Q15 78 30 84 T60 84 T90 84 T120 84 V90 H0Z" fill="#5fb7ea"/></svg>
   <h1>Sail Academy<small data-t="subtitle"></small></h1></div>
-  <div class="card prog"><div id="progCard"></div><button class="btn alt" id="goLeague" data-t="goLeague"></button></div>
+  <div class="card prog"><div id="progCard"></div><button class="btn alt" id="goLeague" data-t="goLeague"></button><button class="btn alt" id="goArchive" data-t="goArchive"></button></div>
   <div class="card">
     <h2 data-t="who"></h2>
     <div class="row">
@@ -282,7 +285,7 @@ table.lg tr.me{ background:#fff6d6; }
     <div class="err" id="menuErr"></div>
     <button class="btn ok" id="goSchool" data-t="goSchool"></button>
   </div>
-  <div class="foot"><span data-t="foot"></span><br><a href="#" id="goAbout" style="color:inherit;font-weight:700">Sail Academy 1.0 · <span data-t="aboutL"></span></a></div>
+  <div class="foot"><span data-t="foot"></span><br><a href="#" id="goAbout" style="color:inherit;font-weight:700">Sail Academy 1.2 · <span data-t="aboutL"></span></a> · <a href="#" id="goOrg" style="color:inherit;font-weight:700">🔑 <span data-t="orgL"></span></a><br><span id="orgStatus"></span></div>
 </div></div>
 
 <!-- ======================= MISSIONI ======================= -->
@@ -307,7 +310,7 @@ table.lg tr.me{ background:#fff6d6; }
     </div>
     <div class="row">
       <div><label data-t="sFlagL"></label><select id="sFlag"><option value="P" data-t="fP"></option><option value="I" data-t="fI"></option><option value="R" data-t="fR"></option></select></div>
-      <div id="instrBox"><label data-t="sInstrL"></label><select id="sInstr"><option value="0" data-t="iNo"></option><option value="1" data-t="iYes"></option></select></div>
+      <div id="instrBox"><label data-t="sInstrL"></label><select id="sInstr"><option value="0" data-t="iNo"></option><option value="1" data-t="iYes"></option><option value="2" data-t="iOther"></option></select></div>
     </div>
     <div class="row">
       <div><label data-t="sWindL"></label><select id="sWind"></select></div>
@@ -331,6 +334,7 @@ table.lg tr.me{ background:#fff6d6; }
     <div class="hint" style="margin-top:0" data-t="lobCodeH"></div>
     <div class="code" id="lobCode">-----</div>
     <div class="hint" id="lobInfo"></div>
+    <div id="lobCoachBox" style="display:none"><label>⚖️ <span id="lobCoachL"></span></label><select id="lobCoach"></select><div class="hint" id="lobCoachHint"></div></div>
     <div id="lobRole" style="display:none"><label data-t="myRoleL"></label><select id="myRole"></select><div class="hint" id="lobCrewHint"></div></div>
     <ul class="plist" id="lobList"></ul>
     <button class="btn ok" id="lobStart" data-t="lobStart"></button>
@@ -413,6 +417,21 @@ table.lg tr.me{ background:#fff6d6; }
   <div class="tabs" id="lgTabs"></div>
   <div class="card" id="lgBody"></div>
   <button class="btn alt" id="lgBack" data-t="schBack"></button>
+</div></div>
+
+<!-- ======================= ARCHIVIO ======================= -->
+<div id="archive" class="screen"><div class="wrap">
+  <h1 data-t="goArchive"></h1>
+  <div class="tabs" id="arTabs"></div>
+  <div class="card" id="arBody"></div>
+  <button class="btn alt" id="arBack" data-t="schBack"></button>
+</div></div>
+
+<!-- ======================= ORGANIZZATORE ======================= -->
+<div id="org" class="screen"><div class="wrap">
+  <h1>🔑 <span data-t="orgL"></span></h1>
+  <div class="card" id="orgBody"></div>
+  <button class="btn alt" id="orgBack" data-t="schBack"></button>
 </div></div>
 
 <!-- ======================= INFO ======================= -->
@@ -735,13 +754,15 @@ const UI = {
   physS:['Semplificata','Simple'], physR:['Realistica','Realistic'],
   play:['Gioca','Play'], goSolo:['Da solo o contro il computer','On your own or against the computer'], goCreate:['Crea una stanza online','Create an online room'],
   codeL:['Codice stanza','Room code'], goJoin:['Entra nella stanza','Join the room'], goSchool:['Scuola vela: schede, quiz e vocabolario','Sailing school: cards, quiz and vocabulary'],
+  orgL:['Area organizzatore','Organiser area'],
+  goArchive:['📒 Archivio regate e partecipanti','📒 Races and participants archive'],
   goLeague:['🏆 Classifica e traguardi','🏆 League and badges'],
   aboutL:['Info, privacy e crediti','About, privacy and credits'],
   foot:['Gioco didattico non ufficiale. Regole tratte da Le Regole di Regata World Sailing 2025-2028 (traduzione FIV). Nessuna registrazione: i dati restano sul dispositivo.','Unofficial educational game. Rules based on the World Sailing Racing Rules of Sailing 2025-2028. No sign-up: data stays on your device.'],
   sModeL:['Modalità','Mode'], sCourseL:['Percorso','Course'], sCatL:['Categoria della regata','Race category'], sBotsL:['Barche del computer','Computer boats'],
   sFlagL:['Bandiera preparatoria','Preparatory flag'], sInstrL:['Ruolo di chi crea la stanza','Role of the room creator'],
   fP:['P (normale)','P (standard)'], fI:['I (regola 30.1)','I (rule 30.1)'], fR:['A sorpresa','Surprise'],
-  iNo:['Navigo anch’io','I sail too'], iYes:['Sono l’istruttore (non navigo)','I am the coach (I do not sail)'],
+  iNo:['Navigo anch’io (giuria automatica)','I sail too (automatic jury)'], iYes:['Sono l’istruttore (non navigo)','I am the coach (I do not sail)'], iOther:['Organizzo; l’istruttore entra nella stanza','I organise; the coach joins the room'],
   mixHint:['Nella categoria mista ognuno gioca con aiuti e regole della propria categoria; la classifica usa il tempo compensato.','In the mixed category everyone plays with the aids and rules of their own category; results use corrected time.'],
   next:['Continua','Continue'], back:['Indietro','Back'],
   lobbyH:['Stanza di regata','Race room'], lobCodeH:['Codice da dare agli altri giocatori:','Code to give to the other players:'], myRoleL:['Il mio ruolo','My role'],
@@ -3248,6 +3269,311 @@ function openLeague(tab = 'week'){
   show('league');
 }
 
+// =====================================================================
+//  ARCHIVIO: storico di regate, partecipanti e presenze, solo su questo
+//  dispositivo. Esportazione CSV (Excel) e backup/ripristino JSON.
+// =====================================================================
+const Archive = {
+  k: 'sailacademy.archive.v1',
+  _d: null,
+  get d(){
+    if (!this._d){ try { this._d = JSON.parse(localStorage.getItem(this.k)) || null; } catch(e){} }
+    if (!this._d) this._d = { races: [], notes: {} };
+    this._d.races ??= []; this._d.notes ??= {};
+    return this._d;
+  },
+  save(){ try { localStorage.setItem(this.k, JSON.stringify(this.d)); } catch(e){} },
+  key(n){ return String(n || '').trim().toLowerCase(); },
+
+  // chiamata a fine regata (non per le missioni)
+  record(res){
+    const R = App.race; if (!R || !res || !res.rows) return;
+    const S = R.S || {};
+    const id = 'r' + (S.seed || Math.floor(Math.random()*1e9)) + '_' + dayKey();
+    if (this.d.races.some(r => r.id === id)) return;
+    const crews = {};
+    (App.roster || []).forEach(r => { if (r.role === 'crew'){ const h = App.roster.find(x => x.pid === r.crewOf); if (h) (crews[h.name] ||= []).push(r.name); } });
+    if (!App.online){ const me = R.me(); if (me && me.crew && me.crew.length) crews[me.name] = me.crew.map(c => c.name); }
+    const rec = {
+      id, date: new Date().toISOString(), day: dayKey(),
+      mode: res.mode, course: S.course || '', cat: S.cat || '', online: !!App.online, host: isHost(),
+      wind: S.wind || '', sea: S.sea || '', cur: S.cur || '',
+      rows: res.rows.map(r => ({ name: r.name, cls: r.cls, cat: r.cat, bot: !!r.bot, pos: r.fin ? r.pos : null, el: r.el != null ? +r.el.toFixed(1) : null, corr: r.corr != null ? +r.corr.toFixed(1) : null, pen: r.pen || 0, served: r.served || 0, start: r.stt != null ? +(+r.stt).toFixed(1) : null, crew: crews[r.name] || [] })),
+      protests: [...(App.protests ? App.protests.values() : [])].map(p => ({ by: p.byName, against: p.againstName, rule: p.enc && p.enc.rule, status: p.status })),
+    };
+    this.d.races.push(rec);
+    if (this.d.races.length > 500) this.d.races.shift();          // tetto: le ultime 500 regate
+    this.save();
+  },
+
+  // riepilogo per persona (equipaggi compresi, barche del computer escluse)
+  people(){
+    const P = {};
+    const get = n => { const k = this.key(n); return P[k] ||= { name: n, races: 0, crewRaces: 0, wins: 0, podiums: 0, posSum: 0, posN: 0, pens: 0, protMade: 0, protWon: 0, protAgainst: 0, days: new Set(), first: null, last: null, classes: new Set(), cats: new Set() }; };
+    for (const r of this.d.races){
+      const humans = r.rows.filter(x => !x.bot);
+      const n = r.rows.length;
+      for (const x of humans){
+        const p = get(x.name); p.races++; p.days.add(r.day); p.classes.add(x.cls); p.cats.add(x.cat);
+        p.first = p.first && p.first < r.day ? p.first : r.day; p.last = p.last && p.last > r.day ? p.last : r.day;
+        if (x.pos){ p.posSum += x.pos; p.posN++; if (x.pos === 1 && n > 1) p.wins++; if (x.pos <= 3 && n > 2) p.podiums++; }
+        p.pens += (x.pen || 0) + (x.served || 0);
+        for (const c of (x.crew || [])){ const q = get(c); q.races++; q.crewRaces++; q.days.add(r.day); q.first = q.first && q.first < r.day ? q.first : r.day; q.last = q.last && q.last > r.day ? q.last : r.day; if (x.pos){ q.posSum += x.pos; q.posN++; } }
+      }
+      for (const pr of (r.protests || [])){
+        if (pr.by && !r.rows.find(x => x.name === pr.by && x.bot)){ const p = get(pr.by); p.protMade++; if (pr.status === 'accolta' || pr.status === 'accettata') p.protWon++; }
+        if (pr.against && !r.rows.find(x => x.name === pr.against && x.bot)) get(pr.against).protAgainst++;
+      }
+    }
+    return Object.values(P).sort((a, b) => b.races - a.races || a.name.localeCompare(b.name));
+  },
+  attendance(){
+    const D = {};
+    for (const r of this.d.races){
+      const s = D[r.day] ||= { day: r.day, races: 0, names: new Set() };
+      s.races++;
+      r.rows.forEach(x => { if (!x.bot){ s.names.add(x.name); (x.crew || []).forEach(c => s.names.add(c)); } });
+    }
+    return Object.values(D).sort((a, b) => b.day.localeCompare(a.day));
+  },
+
+  // ---------------- esportazione / importazione ----------------
+  download(name, text, type){
+    const blob = new Blob([text], { type }); const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  },
+  csv(rows){ return '﻿' + rows.map(r => r.map(v => { v = v == null ? '' : String(v); return /[;"\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(';')).join('\r\n'); },
+  exportRaces(){
+    const out = [[tx('Data','Date'), tx('Ora','Time'), tx('Modalità','Mode'), tx('Percorso','Course'), tx('Categoria','Category'), tx('Vento','Wind'), tx('Posizione','Place'), tx('Nome','Name'), tx('Equipaggio','Crew'), tx('Classe','Class'), tx('Cat.','Cat.'), tx('Computer','Computer'), tx('Tempo (s)','Time (s)'), tx('Compensato (s)','Corrected (s)'), tx('Penalità','Penalties'), tx('Partenza dopo il segnale (s)','Start after gun (s)')]];
+    for (const r of this.d.races){ const dt = new Date(r.date);
+      for (const x of r.rows) out.push([r.day, dt.toTimeString().slice(0,5), modeName(r.mode), r.course ? courseName(r.course) : '', r.cat ? catShort(r.cat) : '', r.wind, x.pos ?? 'DNF', x.name, (x.crew || []).join(', '), CLASSES[x.cls] ? CLASSES[x.cls].name : x.cls, catShort(x.cat), x.bot ? 'PC' : '', x.el != null ? String(x.el).replace('.', ',') : '', x.corr != null ? String(x.corr).replace('.', ',') : '', (x.pen || 0) + (x.served || 0), x.start != null ? String(x.start).replace('.', ',') : '']); }
+    this.download('sail-academy-regate.csv', this.csv(out), 'text/csv;charset=utf-8');
+  },
+  exportPeople(){
+    const out = [[tx('Nome','Name'), tx('Regate','Races'), tx('Di cui in equipaggio','As crew'), tx('Vittorie','Wins'), tx('Podi','Podiums'), tx('Posizione media','Avg place'), tx('Penalità','Penalties'), tx('Proteste fatte','Protests made'), tx('Proteste vinte','Protests won'), tx('Proteste subite','Protests against'), tx('Giorni di presenza','Days present'), tx('Prima volta','First'), tx('Ultima volta','Last'), tx('Classi','Classes'), tx('Note','Notes')]];
+    for (const p of this.people()) out.push([p.name, p.races, p.crewRaces, p.wins, p.podiums, p.posN ? (p.posSum/p.posN).toFixed(1).replace('.', ',') : '', p.pens, p.protMade, p.protWon, p.protAgainst, p.days.size, p.first, p.last, [...p.classes].map(c => CLASSES[c] ? CLASSES[c].name : c).join(', '), this.d.notes[this.key(p.name)] || '']);
+    this.download('sail-academy-partecipanti.csv', this.csv(out), 'text/csv;charset=utf-8');
+  },
+  exportAttendance(){
+    const out = [[tx('Data','Date'), tx('Regate','Races'), tx('Presenti','Present'), tx('Nomi','Names')]];
+    for (const a of this.attendance()) out.push([a.day, a.races, a.names.size, [...a.names].sort().join(', ')]);
+    this.download('sail-academy-presenze.csv', this.csv(out), 'text/csv;charset=utf-8');
+  },
+  backup(){ this.download('sail-academy-archivio-' + dayKey() + '.json', JSON.stringify({ app: 'Sail Academy', v: 1, archive: this.d, prog: App.prefs.prog || null }, null, 1), 'application/json'); },
+  restore(file, done){
+    const fr = new FileReader();
+    fr.onload = () => {
+      try {
+        const j = JSON.parse(fr.result); const a = j.archive || j; if (!a || !Array.isArray(a.races)) throw new Error('bad');
+        const ids = new Set(this.d.races.map(r => r.id)); let n = 0;
+        for (const r of a.races) if (!ids.has(r.id)){ this.d.races.push(r); n++; }
+        this.d.races.sort((x, y) => x.date.localeCompare(y.date));
+        for (const [k, v] of Object.entries(a.notes || {})) if (!this.d.notes[k]) this.d.notes[k] = v;
+        this.save(); done(n, null);
+      } catch(e){ done(0, e); }
+    };
+    fr.readAsText(file);
+  },
+};
+
+// ---------------- schermata Archivio ----------------
+function fmtDay(d){ return d ? d.split('-').reverse().join('/') : ''; }
+function openArchive(tab = 'races', sel){
+  const A = Archive, d = A.d;
+  const tabs = [['races', tx('Regate','Races')], ['people', tx('Partecipanti','Participants')], ['days', tx('Presenze','Attendance')], ['data', tx('Esporta / backup','Export / backup')]];
+  $('arTabs').innerHTML = tabs.map(([k, t]) => `<button data-k="${k}" class="${k === tab ? 'on' : ''}">${t}</button>`).join('');
+  $('arTabs').querySelectorAll('button').forEach(b => b.onclick = () => openArchive(b.dataset.k));
+  let h = '';
+  if (!d.races.length && tab !== 'data') h = `<p>${tb('L’archivio è vuoto. Ogni regata finita su questo dispositivo (da solo o online) viene registrata qui in automatico, con partecipanti, risultati, penalità e proteste.','The archive is empty. Every race finished on this device (solo or online) is recorded here automatically, with participants, results, penalties and protests.')}</p>`;
+  else if (tab === 'races'){
+    h += `<p class="hint">${d.races.length} ${d.races.length === 1 ? tx('regata registrata','race recorded') : tx('regate registrate','races recorded')}. ${tx('Tocca una regata per i dettagli.','Tap a race for details.')}</p>`;
+    h += d.races.slice().reverse().slice(0, 150).map(r => {
+      const hum = r.rows.filter(x => !x.bot), nP = hum.reduce((k, x) => k + 1 + (x.crew || []).length, 0), win = r.rows.find(x => x.pos === 1), open = sel === r.id;
+      return `<div class="arRace${open ? ' open' : ''}" data-id="${r.id}"><div class="arHead"><b>${fmtDay(r.day)} ${new Date(r.date).toTimeString().slice(0,5)}</b> · ${esc(modeName(r.mode))}${r.online ? ' · online' : ''}<br><span class="hint">${nP} ${nP === 1 ? tx('partecipante','participant') : tx('partecipanti','participants')}${win ? ' · 🥇 ' + esc(win.name) : ''} · ${esc(r.wind ? meteoT('wind', r.wind) : '')}</span></div>` +
+        (open ? `<table class="lg">${r.rows.map(x => `<tr><td>${x.pos ?? '–'}</td><td><b>${esc(x.name)}</b>${x.bot ? ' <span class="pill">PC</span>' : ''}${x.crew && x.crew.length ? '<br><span class="hint">' + tx('con ','with ') + esc(x.crew.join(', ')) + '</span>' : ''}</td><td>${esc(CLASSES[x.cls] ? CLASSES[x.cls].name : x.cls)}</td><td>${x.el != null ? fmt(x.el) : 'DNF'}</td><td>${(x.pen||0) + (x.served||0) ? '⚠️' + ((x.pen||0) + (x.served||0)) : ''}</td></tr>`).join('')}</table>` +
+          ((r.protests || []).length ? `<p class="hint">🚩 ${r.protests.map(p => `${esc(p.by)} → ${esc(p.against)} (${esc(p.status)})`).join(' · ')}</p>` : '') : '') + `</div>`;
+    }).join('');
+  } else if (tab === 'people'){
+    const P = A.people();
+    if (sel){
+      const p = P.find(x => A.key(x.name) === sel);
+      if (p){
+        const hist = d.races.filter(r => r.rows.some(x => !x.bot && (A.key(x.name) === sel || (x.crew || []).some(c => A.key(c) === sel)))).slice().reverse();
+        h += `<h2>${esc(p.name)}</h2>
+          <p>${tx('Regate','Races')}: <b>${p.races}</b>${p.crewRaces ? ` (${p.crewRaces} ${tx('in equipaggio','as crew')})` : ''} · 🥇 <b>${p.wins}</b> · ${tx('podi','podiums')} <b>${p.podiums}</b> · ${tx('posizione media','avg place')} <b>${p.posN ? (p.posSum/p.posN).toFixed(1) : '–'}</b><br>
+          ${tx('Penalità','Penalties')}: <b>${p.pens}</b> · ${tx('proteste fatte','protests made')} <b>${p.protMade}</b> (${tx('vinte','won')} ${p.protWon}) · ${tx('subite','against')} <b>${p.protAgainst}</b><br>
+          ${tx('Presente','Present')} <b>${p.days.size}</b> ${p.days.size === 1 ? tx('giorno','day') : tx('giorni','days')} · ${tx('dal','from')} ${fmtDay(p.first)} ${tx('al','to')} ${fmtDay(p.last)}</p>
+          <label>${tx('Note dell’istruttore','Coach notes')}</label><textarea id="arNote" rows="3" style="width:100%;box-sizing:border-box;border-radius:10px;padding:8px;font:inherit">${esc(d.notes[sel] || '')}</textarea>
+          <h2>${tx('Storico','History')}</h2><table class="lg">${hist.slice(0, 60).map(r => { const x = r.rows.find(y => A.key(y.name) === sel) || r.rows.find(y => (y.crew || []).some(c => A.key(c) === sel)); return `<tr><td>${fmtDay(r.day)}</td><td>${esc(modeName(r.mode))}${A.key(x.name) !== sel ? '<br><span class="hint">' + tx('prodiere di ','crew for ') + esc(x.name) + '</span>' : ''}</td><td>${x.pos ? x.pos + '° / ' + r.rows.length : 'DNF'}</td></tr>`; }).join('')}</table>
+          <button class="btn alt" id="arBackP">← ${tx('Tutti i partecipanti','All participants')}</button>`;
+      }
+    } else {
+      h += `<p class="hint">${tx('Tocca un nome per lo storico e le note.','Tap a name for history and notes.')}</p><table class="lg"><tr><th>${tx('Nome','Name')}</th><th>${tx('Regate','Races')}</th><th>🥇</th><th>${tx('Media','Avg')}</th><th>${tx('Giorni','Days')}</th></tr>` +
+        P.map(p => `<tr class="arP" data-k="${esc(A.key(p.name))}" style="cursor:pointer"><td><b>${esc(p.name)}</b>${d.notes[A.key(p.name)] ? ' 📝' : ''}<br><span class="hint">${tx('ultima volta','last')} ${fmtDay(p.last)}</span></td><td>${p.races}</td><td>${p.wins}</td><td>${p.posN ? (p.posSum/p.posN).toFixed(1) : '–'}</td><td>${p.days.size}</td></tr>`).join('') + `</table>`;
+    }
+  } else if (tab === 'days'){
+    h += `<table class="lg"><tr><th>${tx('Giorno','Day')}</th><th>${tx('Regate','Races')}</th><th>${tx('Presenti','Present')}</th></tr>` +
+      A.attendance().map(a => `<tr><td><b>${fmtDay(a.day)}</b></td><td>${a.races}</td><td><b>${a.names.size}</b><br><span class="hint">${esc([...a.names].sort().join(', '))}</span></td></tr>`).join('') + `</table>`;
+  } else {
+    h += `<p>${tb('Tutto l’archivio è salvato <b>solo su questo dispositivo</b>. Da qui puoi aprirlo in Excel o farne una copia di sicurezza.','The whole archive is stored <b>only on this device</b>. From here you can open it in Excel or make a backup.')}</p>
+      <button class="btn" id="arX1">📊 ${tx('Regate e risultati (Excel/CSV)','Races and results (Excel/CSV)')}</button>
+      <button class="btn" id="arX2">👥 ${tx('Riepilogo partecipanti (Excel/CSV)','Participants summary (Excel/CSV)')}</button>
+      <button class="btn" id="arX3">📅 ${tx('Presenze per giorno (Excel/CSV)','Attendance by day (Excel/CSV)')}</button>
+      <button class="btn alt" id="arB">💾 ${tx('Copia di sicurezza (file .json)','Backup (.json file)')}</button>
+      <label class="btn alt" style="display:block;text-align:center">📥 ${tx('Ripristina o unisci un archivio','Restore or merge an archive')}<input type="file" id="arR" accept=".json,application/json" style="display:none"></label>
+      <p class="hint">${tb('“Unisci” aggiunge le regate di un altro dispositivo (per esempio di un altro istruttore) senza creare doppioni. Fai una copia di sicurezza ogni tanto: se si cancellano i dati del browser l’archivio si perde.','“Merge” adds races from another device (e.g. another coach) without duplicates. Back up now and then: clearing the browser data deletes the archive.')}</p>
+      <p id="arMsg" style="font-weight:700"></p>
+      <button class="btn" id="arDel" style="background:#c62828">🗑 ${tx('Cancella tutto l’archivio','Delete the whole archive')}</button>`;
+  }
+  $('arBody').innerHTML = h;
+  $('arBody').querySelectorAll('.arRace').forEach(el => el.onclick = () => openArchive('races', sel === el.dataset.id ? null : el.dataset.id));
+  $('arBody').querySelectorAll('.arP').forEach(el => el.onclick = () => openArchive('people', el.dataset.k));
+  if ($('arBackP')) $('arBackP').onclick = () => openArchive('people');
+  if ($('arNote')) $('arNote').oninput = () => { const v = $('arNote').value.slice(0, 1000); if (v) d.notes[sel] = v; else delete d.notes[sel]; A.save(); };
+  if (tab === 'data'){
+    $('arX1').onclick = () => A.exportRaces(); $('arX2').onclick = () => A.exportPeople(); $('arX3').onclick = () => A.exportAttendance(); $('arB').onclick = () => A.backup();
+    $('arR').onchange = e => { const f = e.target.files[0]; if (!f) return; e.target.value = ''; A.restore(f, (n, err) => { $('arMsg').textContent = err ? tx('File non valido.','Invalid file.') : n ? tx(n === 1 ? 'Aggiunta 1 regata.' : `Aggiunte ${n} regate.`, `${n} race(s) added.`) : tx('Nessuna regata nuova: erano già tutte in archivio.','No new races: they were all already archived.'); }); };
+    $('arDel').onclick = () => confirmTap($('arDel'), () => { A._d = { races: [], notes: {} }; A.save(); openArchive('data'); });
+  }
+  show('archive');
+}
+
+// =====================================================================
+//  ORGANIZZATORE E PASS ISTRUTTORE
+//  Se sul sito c'è il file organizzatore.json (chiave pubblica), solo
+//  l'organizzatore o chi ha un "pass istruttore" firmato da lui può creare
+//  stanze online. Da solo, missioni, scuola ed entrare nelle stanze restano
+//  liberi per tutti. Firma ECDSA P-256 con WebCrypto, nessun server.
+// =====================================================================
+const b64u = {
+  enc(buf){ const b = buf instanceof ArrayBuffer ? new Uint8Array(buf) : buf; let s = ''; for (const c of b) s += String.fromCharCode(c); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); },
+  dec(str){ str = str.replace(/-/g,'+').replace(/_/g,'/'); while (str.length % 4) str += '='; const s = atob(str); const b = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return b; },
+};
+const Org = {
+  kKey: 'sailacademy.org.v1', kPass: 'sailacademy.pass.v1',
+  site: null,        // { jwk, key } chiave pubblica pubblicata sul sito
+  siteChecked: false,
+  pass: null,        // { n, exp, ok }
+  ALG: { name:'ECDSA', namedCurve:'P-256' }, SIG: { name:'ECDSA', hash:'SHA-256' },
+  get mine(){ try { return JSON.parse(localStorage.getItem(this.kKey)) || null; } catch(e){ return null; } },
+  set mine(v){ try { v ? localStorage.setItem(this.kKey, JSON.stringify(v)) : localStorage.removeItem(this.kKey); } catch(e){} },
+  hasCrypto(){ return !!(window.crypto && crypto.subtle); },
+
+  async init(){
+    // pass arrivato con un link (#pass=...)
+    const m = location.hash.match(/#pass=([\w-]+\.[\w-]+)/);
+    if (m){ try { localStorage.setItem(this.kPass, m[1]); } catch(e){} history.replaceState(null, '', location.pathname + location.search); this._newPass = true; }
+    try {
+      const r = await fetch('organizzatore.json', { cache: 'no-cache' });
+      if (r.ok){ const j = await r.json(); if (j && j.publicKey && this.hasCrypto()){ this.site = { jwk: j.publicKey, key: await crypto.subtle.importKey('jwk', j.publicKey, this.ALG, false, ['verify']) }; } }
+    } catch(e){}
+    this.siteChecked = true;
+    await this.checkPass();
+    if (this._newPass){
+      this._newPass = false;
+      const msg = this.pass && this.pass.ok ? tx(`🔑 Pass istruttore attivo per ${this.pass.n} fino al ${new Date(this.pass.exp).toLocaleDateString()}. Ora puoi creare stanze.`, `🔑 Coach pass active for ${this.pass.n} until ${new Date(this.pass.exp).toLocaleDateString()}. You can now create rooms.`)
+                                               : tx('🔑 Questo pass non è valido o è scaduto: chiedine uno nuovo all’organizzatore.', '🔑 This pass is not valid or has expired: ask the organiser for a new one.');
+      setTimeout(() => (typeof Progress !== 'undefined' ? Progress.toast([msg]) : alert(msg)), 600);
+    }
+    renderOrgStatus();
+  },
+  async checkPass(){
+    this.pass = null;
+    let tok = null; try { tok = localStorage.getItem(this.kPass); } catch(e){}
+    if (!tok) return;
+    try {
+      const [pl, sg] = tok.split('.'); const data = JSON.parse(new TextDecoder().decode(b64u.dec(pl)));
+      let ok = false;
+      if (this.site) ok = await crypto.subtle.verify(this.SIG, this.site.key, b64u.dec(sg), new TextEncoder().encode(pl));
+      this.pass = { n: data.n, exp: data.exp, ok: ok && data.exp > Date.now(), expired: data.exp <= Date.now() };
+    } catch(e){ this.pass = { n: '?', exp: 0, ok: false }; }
+  },
+  sameKey(a, b){ return !!(a && b && a.x === b.x && a.y === b.y); },
+  isOrganizer(){ const m = this.mine; return !!(m && (!this.site || this.sameKey(m.pub, this.site.jwk))); },
+  gated(){ return !!this.site; },
+  canCreate(){ return !this.gated() || this.isOrganizer() || !!(this.pass && this.pass.ok); },
+  label(){ if (!this.gated()) return ''; if (this.isOrganizer()) return tx('organizzatore','organiser'); if (this.pass && this.pass.ok) return tx('istruttore autorizzato: ','authorised coach: ') + this.pass.n; return ''; },
+
+  async makeKeys(){
+    const kp = await crypto.subtle.generateKey(this.ALG, true, ['sign', 'verify']);
+    const priv = await crypto.subtle.exportKey('jwk', kp.privateKey), pub = await crypto.subtle.exportKey('jwk', kp.publicKey);
+    this.mine = { priv, pub: { kty: pub.kty, crv: pub.crv, x: pub.x, y: pub.y }, made: Date.now(), passes: [] };
+  },
+  async makePass(name, days){
+    const m = this.mine; if (!m) throw new Error('no key');
+    const key = await crypto.subtle.importKey('jwk', m.priv, this.ALG, false, ['sign']);
+    const data = { n: name.slice(0, 24), exp: Date.now() + days*864e5, i: Date.now() };
+    const pl = b64u.enc(new TextEncoder().encode(JSON.stringify(data)));
+    const sg = b64u.enc(await crypto.subtle.sign(this.SIG, key, new TextEncoder().encode(pl)));
+    const tok = pl + '.' + sg;
+    m.passes = (m.passes || []).concat([{ n: data.n, exp: data.exp, made: data.i }]).slice(-50); this.mine = m;
+    return location.origin + location.pathname + '#pass=' + tok;
+  },
+  dl(name, obj){ const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 1)], { type:'application/json' })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500); },
+};
+
+function renderOrgStatus(){
+  const el = document.getElementById('orgStatus'); if (!el) return;
+  const l = Org.label(); el.textContent = l ? '🔑 ' + l : '';
+}
+
+// schermata "Area organizzatore"
+function openOrg(msg){
+  const m = Org.mine, b = $('orgBody');
+  let h = '';
+  if (!Org.hasCrypto()){ b.innerHTML = `<p>${tx('Questa funzione richiede il sito pubblicato (https).','This feature needs the published site (https).')}</p>`; show('org'); return; }
+  h += `<p>${tb('L’organizzatore decide chi può <b>creare stanze online</b>. Giocare da soli, le missioni, la scuola vela ed entrare nelle stanze con un codice restano liberi per tutti.','The organiser decides who can <b>create online rooms</b>. Solo play, missions, sailing school and joining rooms with a code stay open to everyone.')}</p>`;
+  h += `<p><b>${tx('Stato del sito','Site status')}:</b> ${Org.site ? (Org.isOrganizer() ? '✅ ' + tx('protetto, e questo dispositivo è l’organizzatore.','protected, and this device is the organiser.') : '🔒 ' + tx('protetto: per creare stanze serve un pass istruttore.','protected: creating rooms needs a coach pass.')) : '🔓 ' + tx('libero: chiunque può creare stanze (il file organizzatore.json non è ancora sul sito).','open: anyone can create rooms (organizzatore.json is not on the site yet).')}</p>`;
+  if (Org.pass) h += `<p><b>${tx('Pass su questo dispositivo','Pass on this device')}:</b> ${esc(Org.pass.n)} · ${Org.pass.ok ? '✅ ' + tx('valido fino al ','valid until ') + new Date(Org.pass.exp).toLocaleDateString() : '❌ ' + (Org.pass.expired ? tx('scaduto','expired') : tx('non valido per questo sito','not valid for this site'))}</p>`;
+  if (!m){
+    h += `<h2>${tx('Diventa organizzatore','Become the organiser')}</h2>
+      <p class="hint">${tb('Da fare <b>una volta sola</b>, sul tuo dispositivo. Crea una chiave segreta che resta qui e un file <b>organizzatore.json</b> da caricare su GitHub insieme al gioco: da quel momento solo tu e chi ha un tuo pass potete creare stanze.','Do this <b>once only</b>, on your device. It creates a secret key that stays here and an <b>organizzatore.json</b> file to upload to GitHub with the game: from then on only you and people with your pass can create rooms.')}</p>
+      <button class="btn acc" id="orgMake">🔑 ${tx('Crea la chiave dell’organizzatore','Create the organiser key')}</button>
+      <label class="btn alt" style="display:block;text-align:center">📥 ${tx('Ho già una chiave: ripristinala da file','I already have a key: restore it from file')}<input type="file" id="orgRestore" accept=".json" style="display:none"></label>`;
+  } else {
+    const onSite = Org.site && Org.sameKey(m.pub, Org.site.jwk);
+    h += `<h2>${tx('1 · Pubblica la chiave sul sito','1 · Publish the key on the site')}</h2>
+      <p class="hint">${onSite ? '✅ ' + tx('Fatto: il sito usa la tua chiave.','Done: the site uses your key.') : tb('Scarica <b>organizzatore.json</b> e caricalo su GitHub nella stessa cartella di index.html (Add file → Upload files → Commit). Dopo qualche minuto il sito è protetto.','Download <b>organizzatore.json</b> and upload it to GitHub in the same folder as index.html (Add file → Upload files → Commit). After a few minutes the site is protected.')}</p>
+      <button class="btn alt" id="orgPub">⬇️ organizzatore.json</button>
+      <h2>${tx('2 · Crea un pass per un istruttore','2 · Create a coach pass')}</h2>
+      <div class="row"><div><label>${tx('Nome dell’istruttore','Coach name')}</label><input id="orgName" maxlength="24"></div>
+      <div><label>${tx('Valido per','Valid for')}</label><select id="orgDays"><option value="1">${tx('1 giorno','1 day')}</option><option value="7">${tx('1 settimana','1 week')}</option><option value="30" selected>${tx('1 mese','1 month')}</option><option value="120">${tx('4 mesi (stagione)','4 months (season)')}</option><option value="365">${tx('1 anno','1 year')}</option></select></div></div>
+      <button class="btn acc" id="orgPass">✉️ ${tx('Crea il pass','Create the pass')}</button>
+      <div id="orgOut"></div>
+      <h2>${tx('Pass creati','Passes issued')}</h2>
+      ${(m.passes || []).length ? '<table class="lg">' + m.passes.slice().reverse().map(p => `<tr><td><b>${esc(p.n)}</b></td><td>${tx('fino al ','until ')}${new Date(p.exp).toLocaleDateString()}</td><td>${p.exp > Date.now() ? '✅' : '⌛'}</td></tr>`).join('') + '</table>' : `<p class="hint">${tx('Nessuno.','None.')}</p>`}
+      <h2>${tx('3 · Sicurezza','3 · Safety')}</h2>
+      <p class="hint">${tb('Salva una copia della chiave segreta (per esempio sul PC o in una chiavetta) e non darla a nessuno: se cambi telefono la ripristini da qui. Per <b>revocare tutti i pass</b> crea una chiave nuova e ricarica organizzatore.json: i pass vecchi smettono di funzionare.','Save a copy of the secret key (e.g. on your PC or a USB stick) and give it to no one: if you change phone you restore it from here. To <b>revoke every pass</b> create a new key and re-upload organizzatore.json: old passes stop working.')}</p>
+      <button class="btn alt" id="orgBk">💾 ${tx('Salva copia della chiave segreta','Save a copy of the secret key')}</button>
+      <button class="btn" id="orgNew" style="background:#c62828">♻️ ${tx('Nuova chiave (revoca tutti i pass)','New key (revoke all passes)')}</button>`;
+  }
+  h += `<p id="orgMsg" style="font-weight:700">${msg || ''}</p>`;
+  b.innerHTML = h;
+  const on = (id, f) => { const e = $(id); if (e) e.onclick = f; };
+  on('orgMake', async () => { await Org.makeKeys(); openOrg(tx('Chiave creata. Ora scarica organizzatore.json e caricalo su GitHub.','Key created. Now download organizzatore.json and upload it to GitHub.')); renderOrgStatus(); });
+  on('orgPub', () => Org.dl('organizzatore.json', { app: 'Sail Academy', publicKey: Org.mine.pub }));
+  on('orgBk', () => Org.dl('sail-academy-CHIAVE-SEGRETA-organizzatore.json', { app: 'Sail Academy', secret: true, key: Org.mine }));
+  on('orgNew', () => confirmTap($('orgNew'), async () => { await Org.makeKeys(); openOrg(tx('Nuova chiave creata: carica il nuovo organizzatore.json su GitHub.','New key created: upload the new organizzatore.json to GitHub.')); }));
+  on('orgPass', async () => {
+    const n = $('orgName').value.trim(); if (!n){ $('orgMsg').textContent = tx('Scrivi il nome dell’istruttore.','Enter the coach name.'); return; }
+    const link = await Org.makePass(n, +$('orgDays').value);
+    Org._last = { n, link }; openOrg();
+  });
+  if (Org._last && $('orgOut')){
+    const { n, link } = Org._last;
+    $('orgOut').innerHTML = `<p class="hint">${tx('Manda questo link all’istruttore (WhatsApp, email…). Aprendolo dal suo telefono il pass si attiva da solo.','Send this link to the coach (WhatsApp, email…). Opening it on their phone activates the pass.')}</p>
+      <textarea readonly rows="3" style="width:100%;box-sizing:border-box;font-size:12px;border-radius:10px;padding:6px">${esc(link)}</textarea>
+      <button class="btn" id="orgShare">📤 ${tx('Condividi / copia il link','Share / copy the link')}</button>`;
+    $('orgShare').onclick = async () => {
+      try { if (navigator.share) await navigator.share({ title: 'Sail Academy – pass istruttore', text: tx(`Pass istruttore Sail Academy per ${n}`, `Sail Academy coach pass for ${n}`), url: link }); else { await navigator.clipboard.writeText(link); $('orgMsg').textContent = tx('Link copiato.','Link copied.'); } } catch(e){}
+    };
+  }
+  const rf = $('orgRestore');
+  if (rf) rf.onchange = e => { const f = e.target.files[0]; if (!f) return; const fr = new FileReader(); fr.onload = () => { try { const j = JSON.parse(fr.result); if (!j.key || !j.key.priv) throw 0; Org.mine = j.key; openOrg(tx('Chiave ripristinata.','Key restored.')); renderOrgStatus(); } catch(_){ $('orgMsg').textContent = tx('File non valido.','Invalid file.'); } }; fr.readAsText(f); };
+  show('org');
+}
+
 'use strict';
 // =====================================================================
 //  APP: schermate, comandi, stanze online, proteste, missioni, ciclo
@@ -3328,7 +3654,14 @@ function initMenu(){
   const need = () => { if (!$('nick').value.trim()) { $('menuErr').textContent = tx('Scrivi un soprannome per iniziare.','Type a nickname to start.'); $('nick').focus(); return false; } $('menuErr').textContent=''; audio(); return true; };
   $('goSolo').onclick = () => { if (need()) openSetup(false); };
   $('goMis').onclick = () => { if (need()) openMissions(); };
-  $('goCreate').onclick = () => { if (need()) openSetup(true); };
+  $('goCreate').onclick = () => {
+    if (!need()) return;
+    if (!Org.canCreate()){
+      $('menuErr').innerHTML = tb('Su questo sito le stanze online le crea solo l’organizzatore o un istruttore con il suo <b>pass</b>. Chiedi il link del pass all’organizzatore, oppure entra in una stanza con il codice.','On this site online rooms can only be created by the organiser or a coach with their <b>pass</b>. Ask the organiser for the pass link, or join a room with its code.');
+      return;
+    }
+    openSetup(true);
+  };
   $('goJoin').onclick = () => { if (need()) joinRoom($('joinCode').value); };
   $('goSchool').onclick = () => openSchool();
 }
@@ -3345,6 +3678,7 @@ function openSetup(online){
   opt($('sCat'), [...Object.keys(CATEGORIES).map(k => [k, catShort(k)]), ['mista', catName('mista')]], App.prefs.cat);
   opt($('sBots'), Array.from({length:8}, (_,i) => [i, i ? i + tx(i===1?' barca':' barche', i===1?' boat':' boats') : tx('Nessuna','None')]), online ? 0 : 4);
   $('instrBox').style.display = online ? '' : 'none';
+  if (online) $('sInstr').value = Org.pass && Org.pass.ok && !Org.isOrganizer() ? '1' : (Org.isOrganizer() ? '2' : '0');
   const kid = App.prefs.cat === 'bambini';
   opt($('sWind'), Object.keys(METEO_T.wind).map(k => [k, meteoT('wind', k)]), 'medio');
   opt($('sTrend'), Object.keys(METEO_T.trend).map(k => [k, meteoT('trend', k)]), kid ? 'stabile' : 'sorpresa');
@@ -3357,13 +3691,16 @@ function openSetup(online){
   $('setupGo').onclick = async () => {
     App.S = { mode: $('sMode').value, course: $('sCourse').value, cat: $('sCat').value, nBots: +$('sBots').value, flag: $('sFlag').value,
               wind: $('sWind').value, trend: $('sTrend').value, sea: $('sSea').value, cur: $('sCur').value };
-    App.instructor = online && $('sInstr').value === '1';
+    const iv = $('sInstr').value;
+    App.instructor = online && iv === '1';
+    App.S.coach = online && iv === '1' ? 'host' : '';            // '' = giuria automatica, 'host' = chi crea, altrimenti pid dell'istruttore
+    App.S.orgRole = iv === '2' ? 'org' : '';
     if (!online){ App.roster = [ me2roster('host') ]; startRaceHost(); return; }
     $('setupGo').disabled = true; $('setupErr').textContent = tx('Creo la stanza…','Creating the room…');
     try {
       App.net = new Net(); bindNet();
       const code = await App.net.createRoom();
-      App.roster = [ Object.assign(me2roster('host'), { role: App.instructor ? 'spectator' : 'helm' }) ];
+      App.roster = [ Object.assign(me2roster('host'), { role: App.instructor || App.S.orgRole ? 'spectator' : 'helm' }) ];
       $('setupErr').textContent = '';
       openLobby(code);
     } catch(e){ $('setupErr').textContent = tx('Impossibile creare la stanza: ','Could not create the room: ') + e.message + tx(' Se stai provando il gioco dentro Claude, il gioco online funziona solo dalla versione pubblicata sul web.',' If you are trying the game inside Claude, online play only works from the version published on the web.'); }
@@ -3436,7 +3773,7 @@ function openLobby(code){
   $('lobStart').style.display = host ? '' : 'none';
   $('lobWait').style.display = host ? 'none' : '';
   $('lobInfo').innerHTML = host && App.S
-    ? `${tx('Modalità','Mode')}: <b>${esc(modeName(App.S.mode))}</b> · ${esc(courseName(App.S.course))} · <b>${esc(catShort(App.S.cat))}</b>${App.instructor ? ' · <b>' + tx('modalità istruttore','coach mode') + '</b>' : ''}<br>${tx('Fino a 8 giocatori. Chi entra può timonare o regolare la scotta di un compagno (equipaggio).','Up to 8 players. Each can steer or trim the sheet of a team-mate (crew).')}`
+    ? `${tx('Modalità','Mode')}: <b>${esc(modeName(App.S.mode))}</b> · ${esc(courseName(App.S.course))} · <b>${esc(catShort(App.S.cat))}</b>${Org.label() ? ' · <b>' + esc(Org.label()) + '</b>' : ''}<br>${tx('Fino a 8 giocatori. Chi entra può timonare o regolare la scotta di un compagno (equipaggio).','Up to 8 players. Each can steer or trim the sheet of a team-mate (crew).')}`
     : tx('Puoi timonare la tua barca oppure regolare la scotta di un compagno.','You can steer your own boat or trim a team-mate’s sheet.');
   $('lobLeave').onclick = () => { App.net && App.net.close(); App.net = null; show('menu'); };
   $('lobStart').onclick = () => {
@@ -3447,7 +3784,7 @@ function openLobby(code){
   };
   $('myRole').onchange = () => {
     const v = $('myRole').value;
-    const role = v === 'helm' ? 'helm' : 'crew';
+    const role = v === 'helm' ? 'helm' : v === 'spectator' ? 'spectator' : 'crew';
     const crewRole = role === 'crew' ? v.split(':')[0] : null, crewOf = role === 'crew' ? v.split(':').slice(1).join(':') : null;
     if (host){ const r = App.roster.find(r => r.pid === 'host'); r.role = role; r.crewOf = crewOf; r.crewRole = crewRole; lobbyChanged(); }
     else App.net.toHost({ t:'role', role, crewOf, crewRole });
@@ -3460,20 +3797,36 @@ function renderLobby(){
   const teams = App.S && App.S.mode === 'squadre';
   $('lobList').innerHTML = App.roster.map((r, i) => {
     const hn = esc((App.roster.find(x => x.pid === r.crewOf)||{}).name || '?');
-    const role = r.role === 'helm' ? tx('Timoniere','Helm') : r.role === 'crew' ? tx('Prodiere di ','Crew for ') + hn : tx('Istruttore','Coach');
+    const isCoach = App.S && App.S.coach === r.pid;
+    const role = isCoach ? '⚖️ ' + tx('Istruttore – giuria','Coach – jury') : r.role === 'helm' ? tx('Timoniere','Helm') : r.role === 'crew' ? tx('Prodiere di ','Crew for ') + hn : r.pid === 'host' && App.S && App.S.orgRole ? tx('Organizzatore','Organiser') : tx('Spettatore','Spectator');
     const teamSel = teams && r.role === 'helm' ? (host ? `<select data-pid="${r.pid}" class="teamSel"><option value="0"${r.team==0?' selected':''}>● ${tx('Squadra Blu','Blue team')}</option><option value="1"${r.team==1?' selected':''}>◆ ${tx('Squadra Gialla','Yellow team')}</option></select>` : `<span class="pill">${r.team ? '◆ ' + tx('Gialla','Yellow') : '● ' + tx('Blu','Blue')}</span>`) : '';
     return `<li><span class="dot" style="background:${COLORS[i % COLORS.length]}"></span><b>${esc(r.name)}</b>${r.pid===myPid?tx(' (tu)',' (you)'):''}
       <span class="pill">${esc(catShort(r.cat))}</span><span class="pill">${esc(CLASSES[r.cls].name)}</span><span class="pill">${role}</span>${r.prog ? `<span class="pill pillxp">${tx('Liv.','Lv.')} ${r.prog.lvl}${r.prog.st ? ' · 🔥' + r.prog.st : ''}</span>` : ''}${teamSel}</li>`;
   }).join('') + (App.S && App.S.nBots ? `<li><span class="dot" style="background:#90a4ae"></span>+ ${App.S.nBots} ${tx('barche del computer','computer boats')}</li>` : '');
   document.querySelectorAll('.teamSel').forEach(s => s.onchange = () => { const r = App.roster.find(x => x.pid === s.dataset.pid); r.team = +s.value; lobbyChanged(); });
+  // chi decide le proteste: la giuria automatica, chi ha creato la stanza o un istruttore entrato nella stanza
+  const coachR = App.S && App.S.coach ? App.roster.find(r => r.pid === App.S.coach) : null;
+  $('lobCoachBox').style.display = host ? '' : 'none';
+  $('lobCoachL').textContent = tx('Giuria (decide le proteste)','Jury (decides protests)');
+  if (host){
+    const cand = App.roster.filter(r => r.pid !== 'host');
+    opt($('lobCoach'), [['', tx('Automatica (decide il gioco)','Automatic (the game decides)')], ['host', tx('Io','Me')]].concat(cand.map(r => [r.pid, tx('Istruttore: ','Coach: ') + r.name])), App.S.coach || '');
+    $('lobCoachHint').textContent = tx('L’istruttore scelto non regata: guarda la regata, vede il registro delle infrazioni e decide le proteste dal suo dispositivo.','The chosen coach does not race: they watch, see the infringement log and decide protests from their own device.');
+    $('lobCoach').onchange = () => {
+      const v = $('lobCoach').value; App.S.coach = v; App.instructor = v === 'host';
+      App.roster.forEach(r => { if (r.pid === v && r.pid !== 'host'){ r.role = 'spectator'; r.crewOf = null; r.crewRole = null; } });
+      const hr = App.roster.find(r => r.pid === 'host'); if (hr && v === 'host'){ hr.role = 'spectator'; hr.crewOf = null; }
+      lobbyChanged();
+    };
+  } else if (coachR) $('lobInfo').innerHTML = tx('Giuria: ','Jury: ') + `<b>${esc(coachR.name)}</b>` + (coachR.pid === myPid ? tx(' (sei tu: non regati, decidi le proteste)',' (you: you do not race, you decide protests)') : '');
   const me = App.roster.find(r => r.pid === myPid);
-  if (me && !(host && App.instructor)){
+  if (me && !(host && App.instructor) && !(App.S && App.S.coach === myPid)){
     $('lobRole').style.display = '';
     // equipaggio realistico: solo le barche in doppio (420, Hobie 16) hanno un posto per il prodiere
     const helms = App.roster.filter(r => r.role === 'helm' && r.pid !== myPid && crewFree(r, myPid) > 0);
-    const opts = [['helm', tx('Timoniere della mia barca','Helm of my own boat')]];
+    const opts = [['helm', tx('Timoniere della mia barca','Helm of my own boat')], ['spectator', tx('Spettatore (guardo e basta)','Spectator (just watching)')]];
     helms.forEach(h => opts.push(['scotta:' + h.pid, tx('Prodiere (fiocco, trapezio e chiamate) sul ','Crew (jib, trapeze and calls) on the ') + CLASSES[h.cls].name + tx(' di ',' of ') + h.name]));
-    opt($('myRole'), opts, me.role === 'crew' ? 'scotta:' + me.crewOf : 'helm');
+    opt($('myRole'), opts, me.role === 'crew' ? 'scotta:' + me.crewOf : me.role === 'spectator' ? 'spectator' : 'helm');
     $('lobCrewHint').innerHTML = tb('Optimist, ILCA e windsurf sono barche singole. In due si va solo su <b>420</b> e <b>Hobie Cat 16</b>: timoniere + prodiere.','Optimist, ILCA and windsurf are single-handers. Two people sail only on the <b>420</b> and the <b>Hobie Cat 16</b>: helm + crew.');
   } else $('lobRole').style.display = 'none';
 }
@@ -3484,6 +3837,10 @@ function crewFree(h, exceptPid){
 }
 // l'host fa rispettare l'equipaggio di ogni classe
 function validateCrew(){
+  if (App.S && App.S.coach && App.S.coach !== 'host'){
+    const c = App.roster.find(r => r.pid === App.S.coach);
+    if (!c) App.S.coach = ''; else if (c.role !== 'spectator') App.S.coach = '';
+  }
   const used = {};
   App.roster.forEach(r => {
     if (r.role !== 'crew') return;
@@ -3555,11 +3912,12 @@ function hostMsg(m, from){
     case 'role': { const r = App.roster.find(x => x.pid === from); if (!r) return; r.role = m.role; r.crewOf = m.crewOf; r.crewRole = m.crewRole; lobbyChanged(); break; }
     case 'crewpos': if (R){ const b = R.boat(m.id); if (!b) return; if (R.local.has(m.id)) applyCrewPos(b, m); else App.net.send(m, ownerPid(m.id)); } break;
     case 'call': handleCall(m); App.net.broadcast(m, from); break;
+    case 'judge': { if (!App.S || App.S.coach !== from) return; const p = App.protests.get(m.id); if (p) resolveProt(p, !!m.ok, true); break; }
     case 'prog': { Progress.remember(m.name, m.s); const r = App.roster.find(x => x.pid === from); if (r) r.prog = m.s; App.net.broadcast(m, from); break; }
     case 'st': if (R){ const b = R.boat(m.b.id); if (b && !R.local.has(b.id)) b.unpack(m.b); } break;
     case 'sheet': if (R){ const b = R.boat(m.id); if (!b) return; if (R.local.has(m.id)) b.crewSheet = m.s; else App.net.send(m, ownerPid(m.id)); } break;
     case 'sail': if (R){ const b = R.boat(m.id); if (!b) return; if (R.local.has(m.id)) applySail(b, m); else App.net.send(m, ownerPid(m.id)); } break;
-    case 'inc': if (R){ R.incidents.push(m.inc); if (R.incidents.length > 80) R.incidents.shift(); renderInstr(); } break;
+    case 'inc': if (R){ R.incidents.push(m.inc); if (R.incidents.length > 80) R.incidents.shift(); renderInstr(); if (App.S && App.S.coach && App.S.coach !== 'host') App.net.send({ t:'incC', inc: m.inc }, App.S.coach); } break;
     case 'prot': hostProtest(m.p); break;
     case 'protAcc': protAccepted(m.id); break;
     case 'protJury': { const p = App.protests.get(m.id); if (p && p.status === 'aperta') toJury(p); break; }
@@ -3567,6 +3925,7 @@ function hostMsg(m, from){
 }
 function clientMsg(m){
   switch (m.t){
+    case 'incC': { const R = App.race; if (R && !R.incidents.some(i => i.t === m.inc.t && i.name === m.inc.name && i.rule === m.inc.rule)){ R.incidents.push(m.inc); if (R.incidents.length > 80) R.incidents.shift(); renderInstr(); } break; }
     case 'lobby': App.roster = m.roster; App.S = m.S; App.roster.forEach(r => r.prog && Progress.remember(r.name, r.prog)); if (!App.race) renderLobby(); break;
     case 'prog': Progress.remember(m.name, m.s); break;
     case 'full': leaveGame(); notice(tx('La stanza è piena (massimo 8 giocatori).','The room is full (8 players max).')); break;
@@ -3684,7 +4043,7 @@ function toJury(p){
   if (p.status !== 'aperta') return;
   p.status = 'giuria';
   p.sug = judge(p);
-  if (App.instructor){ broadcastProt(p); renderInstr(); pushBanner({ key:'jury_new', extra: p.byName + ' → ' + p.againstName }, 'ragazzi'); beep(0.2, 600); }
+  if (App.S && App.S.coach){ broadcastProt(p); if (App.instructor){ renderInstr(); pushBanner({ key:'jury_new', extra: p.byName + ' → ' + p.againstName }, 'ragazzi'); beep(0.2, 600); } }
   else setTimeout(() => resolveProt(p, p.sug.ok), 1200);
 }
 // Giuria automatica: chi doveva tenersi discosto? L'altra barca ha dovuto manovrare?
@@ -3716,6 +4075,7 @@ function protUpdate(p){
   if (old && old !== p) Object.assign(old, p); else if (!old) App.protests.set(p.id, p);
   const q = App.protests.get(p.id);
   if (q._shown === q.status) return; q._shown = q.status;
+  if (q.status === 'giuria' && App.instructor && !isHost()){ pushBanner({ key:'jury_new', extra: q.byName + ' → ' + q.againstName }, 'ragazzi'); beep(0.2, 600); }
   const me = R.me();
   const involved = me && (me.id === q.by || me.id === q.against);
   if (q.status === 'accolta'){
@@ -3834,11 +4194,12 @@ function beginGame(R){
   App.viewId = App.myRole === 'crew' ? 'p_' + App.crewOf : R.myId;
   if (!App.rend) App.rend = new Renderer($('cv'), $('inst'), $('windDial'));
   App.rend.mode = App.viewId ? 'follow' : 'panorama'; App.rend.followId = App.viewId; App.rend.zoom = 1;
-  R.onIncident = inc => { if (App.online && !App.net.isHost) App.net.toHost({ t:'inc', inc }); renderInstr(); };
+  R.onIncident = inc => { if (App.online && !App.net.isHost) App.net.toHost({ t:'inc', inc }); else if (App.online && R.S.coach && R.S.coach !== 'host') App.net.send({ t:'incC', inc }, R.S.coach); renderInstr(); };
   R.onOver = res => { if (App.online) App.net.broadcast({ t:'res', res }); if (!App.mission || !App.mission.done) showResults(res); };
   R.onEncounter = onEncounter;
   const me = R.me(), crew = App.myRole === 'crew', spect = App.myRole === 'spectator';
   const host = isHost();
+  App.instructor = !!(App.online && R.S && R.S.coach && R.S.coach === (host ? 'host' : App.net.myPid));
   const vis = (id, on) => $(id).classList.toggle('hide', !on);
   vis('steerRow', !!me);
   vis('bMan', !!me && CATEGORIES[me.cat].autoTack);
@@ -3847,9 +4208,9 @@ function beginGame(R){
   vis('instCard', !!(me || crew));
   vis('info', true);
   vis('bPause', host && !R.training && App.online);
-  vis('bInstr', host && !R.training && App.online);
+  vis('bInstr', (host || App.instructor) && !R.training && App.online);
   vis('bStop', host && !R.training && (spect || App.instructor));
-  $('instr').style.display = host && (spect || App.instructor) && !R.training ? 'block' : 'none';
+  $('instr').style.display = ((host && spect) || App.instructor) && !R.training ? 'block' : 'none';
   $('menuSheet').classList.remove('on');
   $('protBox').innerHTML = '';
   applyLang();
@@ -4238,7 +4599,7 @@ function renderInstr(){
   d.querySelectorAll('.pcase').forEach(el => {
     const p = App.protests.get(el.dataset.p);
     drawCase(el.querySelector('canvas'), p.enc);
-    el.querySelectorAll('button').forEach(b => b.onclick = () => resolveProt(p, b.dataset.v === '1', true));
+    el.querySelectorAll('button').forEach(b => b.onclick = () => { const ok = b.dataset.v === '1'; if (isHost()) resolveProt(p, ok, true); else { App.net.toHost({ t:'judge', id: p.id, ok }); b.parentElement.querySelectorAll('button').forEach(x => x.disabled = true); } });
   });
 }
 function statusText(s){ return { accolta: tx('accolta','upheld'), respinta: tx('respinta','dismissed'), accettata: tx('44.1 accettato','44.1 taken'), giuria: tx('in giuria','with the jury'), aperta: tx('aperta','open') }[s] || s; }
@@ -4523,7 +4884,7 @@ function updateHud(R, b, cat){
     if (leadV){ const t = tx('Carrello: ','Lead: ') + (b.lead < 0 ? tx('avanti','fwd') : b.lead > 0 ? tx('indietro','aft') : tx('centro','mid')); if ($('bLead').textContent !== t) $('bLead').textContent = t; }
     const showPen = b.penalty > 0 && App.myRole === 'helm' && b.cat !== 'adulti';
     $('bPen').style.display = showPen ? 'block' : 'none';
-    const canProt = App.myRole === 'helm' && b.started !== undefined && !R.over && !b.finished && R.t > -4*(R.spm||60) && !App.mission;
+    const canProt = App.myRole === 'helm' && !R.over && !b.finished && !App.mission;   // sempre visibile al timoniere durante la regata
     $('bProt').style.display = canProt ? 'block' : 'none';
     if (canProt){ const n = (R.encLog || []).filter(e => (e.kc === b.id || e.row === b.id) && R.t - e.t <= 60).length; const t = tx('Protesto','Protest') + (n ? ' (' + n + ')' : ''); if ($('bProtT').textContent !== t) $('bProtT').textContent = t; }
     $('bPen').textContent = tx('FAI IL GIRO','DO THE TURN') + ' (' + b.penalty + ')';
@@ -4552,7 +4913,7 @@ function positionOf(R, b){
 // =====================================================================
 //  CLASSIFICA
 // =====================================================================
-const APP_VERSION = '1.0';
+const APP_VERSION = '1.2';
 function renderAbout(){
   $('aboutBody').innerHTML = `
   <h2>Sail Academy ${APP_VERSION}</h2>
@@ -4560,7 +4921,7 @@ function renderAbout(){
   <h2>${tx('Privacy','Privacy')}</h2>
   <ul>
     <li>${tb('Nessuna registrazione, nessun account, nessuna pubblicità, nessun sistema di tracciamento o statistica.','No sign-up, no account, no ads, no tracking or analytics.')}</li>
-    <li>${tb('Nome scelto, categoria, preferenze, stelle delle missioni e record del fantasma restano <b>solo su questo dispositivo</b> (memoria locale del browser). Si cancellano svuotando i dati del sito.','Chosen name, category, settings, mission stars and ghost records stay <b>only on this device</b> (browser local storage). Clear the site data to delete them.')}</li>
+    <li>${tb('Nome scelto, categoria, preferenze, stelle delle missioni e record del fantasma restano <b>solo su questo dispositivo</b> (memoria locale del browser). Sullo stesso dispositivo resta anche l’archivio delle regate (partecipanti, risultati, presenze, note), che si può esportare o cancellare dalla schermata Archivio. Si cancella tutto svuotando i dati del sito.','Chosen name, category, settings, mission stars and ghost records stay <b>only on this device</b> (browser local storage). The race archive (participants, results, attendance, notes) also stays on this device and can be exported or deleted from the Archive screen. Clear the site data to delete everything.')}</li>
     <li>${tb('Nel gioco online i dispositivi si collegano direttamente tra loro (WebRTC). Per trovarsi usano il servizio pubblico gratuito PeerJS: il servizio e gli altri giocatori della stanza vedono l’indirizzo IP del dispositivo, come per qualsiasi sito. Nella stanza circolano solo il nome scelto e i dati della regata; nulla viene salvato su server.','In online play devices connect directly to each other (WebRTC). To find each other they use the free public PeerJS service: the service and the other players in the room see the device IP address, as with any website. Only the chosen name and race data are exchanged; nothing is stored on a server.')}</li>
     <li>${tb('Consiglio per scuole e camp: far usare ai ragazzi un soprannome o solo il nome, mai nome e cognome.','Tip for schools and camps: children should use a nickname or first name only, never their full name.')}</li>
   </ul>
@@ -4581,6 +4942,7 @@ function showResults(res){
   if (me && me.finished){ App.prefs.races = (App.prefs.races||0) + 1; Store.set({ races: App.prefs.races }); }
   let h = '';
   const myB = App.myRole === 'crew' ? 'p_' + App.crewOf : (me && me.id);
+  try { Archive.record(res); } catch(e){}
   let gain = null;
   if ((App.myRole === 'helm' || App.myRole === 'crew') && myB){
     if (res.mode === 'allenamento'){ const n = Math.min(10, Math.floor(Math.max(0, R ? R.t : 0)/60)); if (n){ Progress.add(n, tx('allenamento','training')); gain = { xp: n, why: [tx(`${n} minuti di allenamento`, `${n} minutes of training`)] }; } }
@@ -4755,8 +5117,14 @@ function startVocab(){
 window.addEventListener('load', () => { initMenu(); bindControls(); startBackgroundTicker(); });
 
 $('goLeague').onclick = () => openLeague('week');
+$('goArchive').onclick = () => openArchive('races');
+$('arBack').onclick = () => show('menu');
 $('lgBack').onclick = () => { renderProgressCard(); show('menu'); };
 window.addEventListener('load', () => renderProgressCard());
+$('goOrg').onclick = e => { e.preventDefault(); openOrg(); };
+$('orgBack').onclick = () => { Org._last = null; show('menu'); };
+window.addEventListener('load', () => Org.init());
+window.addEventListener('hashchange', () => { if (location.hash.startsWith('#pass=')) Org.init(); });
 $('goAbout').onclick = e => { e.preventDefault(); renderAbout(); show('about'); };
 $('aboutBack').onclick = () => show('menu');
 // app installabile e utilizzabile anche senza rete (solo/missioni) quando è pubblicata su un sito https

@@ -1,4 +1,4 @@
-# Come pubblicare Sail Academy 1.0
+# Come pubblicare Sail Academy 1.2
 
 Servono circa 15 minuti, un computer e un indirizzo email. Il risultato è un link fisso, per esempio
 `https://tuonome.github.io/sailacademy/`, che si apre su telefoni, tablet e PC e funziona anche per il gioco online.
@@ -8,7 +8,7 @@ Servono circa 15 minuti, un computer e un indirizzo email. Il risultato è un li
 
 ## A. GitHub Pages (consigliato: gratis e senza scadenza)
 
-1. **Scompatta** `SailAcademy-1.0.zip`. Ottieni la cartella `SailAcademy-1.0` con dentro `index.html`, `sw.js`,
+1. **Scompatta** `SailAcademy-1.2.zip`. Ottieni la cartella `SailAcademy-1.2` con dentro `index.html`, `sw.js`,
    `manifest.webmanifest`, le icone `.png`, `.nojekyll` e i documenti.
    Il file `.nojekyll` è nascosto: su Mac si vede con Cmd+Maiusc+punto, su Windows con Visualizza → Elementi nascosti.
    Non è indispensabile.
@@ -33,7 +33,7 @@ Repository → **Add file → Upload files** → trascina i nuovi file, che sost
 versione arriva alla prima apertura con Internet; se serve, si chiude e si riapre una seconda volta.
 
 ## B. Alternativa veloce: Netlify Drop
-1. Apri https://app.netlify.com/drop e trascina la cartella `SailAcademy-1.0`.
+1. Apri https://app.netlify.com/drop e trascina la cartella `SailAcademy-1.2`.
 2. Ottieni subito un link `…netlify.app`.
 3. **Importante:** senza account il sito viene **cancellato dopo circa un'ora**. Per tenerlo crea subito l'account
    gratuito dal pulsante di rivendicazione ("claim") del sito. Puoi anche cambiargli nome, per esempio `sailacademy.netlify.app`.
@@ -58,3 +58,13 @@ L'app si apre a schermo intero e, dopo la prima apertura, funziona anche senza r
   Non aggiungere loghi FIV o di World Sailing senza permesso.
 - **Nome:** prima di diffonderlo pubblicamente, verifica che "Sail Academy" non sia già un marchio registrato
   (banca dati UIBM / EUIPO). È un nome usato anche da alcune scuole vela: se crea confusione, si cambia in un minuto.
+
+## E. Proteggere il sito: solo tu (e chi autorizzi) create le stanze
+1. Apri il sito pubblicato sul **tuo** telefono o PC.
+2. In fondo al menu tocca **🔑 Area organizzatore**, poi **Crea la chiave dell'organizzatore**.
+3. Tocca **⬇️ organizzatore.json** e carica il file su GitHub insieme agli altri (Add file → Upload files → Commit changes).
+4. Dopo qualche minuto, nell'Area organizzatore la riga "Stato del sito" mostra ✅ **protetto**.
+5. Tocca **💾 Salva copia della chiave segreta** e conserva il file sul PC.
+6. Per autorizzare un istruttore: Area organizzatore → nome → durata → **Crea il pass** → mandagli il link.
+
+Attenzione: quando aggiorni il gioco a una versione nuova, **non cancellare `organizzatore.json`** dal repository.

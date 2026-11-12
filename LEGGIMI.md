@@ -1,4 +1,4 @@
-# Sail Academy – versione 1.0
+# Sail Academy – versione 1.2
 
 Gioco didattico di regata per la vela preagonistica. Si gioca su tablet, PC e telefono (meglio in orizzontale). È un file unico, `index.html`, e non serve installare niente.
 
@@ -34,6 +34,37 @@ Il pacchetto `Sail Academy-1.0.zip` contiene tutto ciò che serve. La procedura 
 | Vista timoniere / prodiere | 👁 o tocco sulla finestrella | I |
 | Giro di penalità | FAI IL GIRO | P |
 | Vista | Panoramica, ＋, － | V, +, − |
+
+## Organizzatore, istruttori e giuria (novità 1.2)
+**Chi fa cosa**
+- **Organizzatore**: crea le stanze e decide chi altro può crearle.
+- **Istruttore**: fa da giuria; può creare stanze solo con un **pass** dell'organizzatore.
+- **Ragazzi**: entrano nelle stanze con il codice. Da soli possono sempre giocare, fare le missioni e la scuola vela.
+
+**Proteggere il sito (una volta sola, dal dispositivo dell'organizzatore)**
+1. In fondo al menu tocca **🔑 Area organizzatore** e poi **Crea la chiave dell'organizzatore**.
+2. Tocca **⬇️ organizzatore.json** e carica il file su GitHub nella stessa cartella di index.html (Add file → Upload files → Commit changes).
+3. Dopo qualche minuto la riga "Stato del sito" mostra ✅ **protetto**. Da quel momento solo l'organizzatore e chi ha un pass possono creare stanze.
+4. Tocca **💾 Salva copia della chiave segreta** e conserva il file sul PC: se cambi telefono, la ripristini da qui. Non darlo a nessuno.
+
+**Dare il permesso a un istruttore**
+- Nell'Area organizzatore scrivi il nome dell'istruttore, scegli la durata (1 giorno, 1 settimana, 1 mese, 4 mesi o 1 anno) e tocca **Crea il pass**.
+- Manda il link che compare (WhatsApp, email). Quando l'istruttore lo apre sul suo telefono, il pass si attiva da solo e sotto il menu compare "🔑 istruttore autorizzato: Nome".
+- Il pass scade alla data scelta. Per revocare subito **tutti** i pass, crea una chiave nuova e ricarica organizzatore.json.
+- I pass sono firmati digitalmente e non si possono falsificare: modificare nome o scadenza li rende non validi.
+
+**Stanze con istruttore (giuria)**
+- Quando crei la stanza scegli "Organizzo; l'istruttore entra nella stanza". Nella stanza, alla voce **⚖️ Giuria**, scegli l'istruttore tra i partecipanti. In alternativa puoi scegliere "Automatica" o "Io".
+- L'istruttore non regata. Dal suo dispositivo segue la regata, vede il registro delle infrazioni, riceve le proteste con lo schema dell'incrocio e le decide. Il verdetto arriva a tutti.
+- Chi entra nella stanza può anche scegliere **Spettatore**: è utile all'organizzatore per seguire e **archiviare** le regate create da un istruttore.
+
+## Archivio regate e partecipanti (novità 1.1)
+Dal menu: **📒 Archivio regate e partecipanti**. Ogni regata finita su questo dispositivo, da soli o online, viene registrata in automatico. Chi crea le stanze ha quindi l'archivio completo di tutti. Se una stanza la crea un istruttore, l'organizzatore può entrarci come Spettatore per archiviarla, oppure farsi mandare il backup e unirlo al suo archivio.
+- **Regate:** data e ora, modalità, vento, classifica con tempi, equipaggi, penalità e proteste con il verdetto.
+- **Partecipanti:** per ogni ragazzo, regate fatte (anche da prodiere), vittorie, podi, posizione media, penalità, proteste fatte, vinte e subite, giorni di presenza, prima e ultima volta, storico completo e **note dell'istruttore**.
+- **Presenze:** per ogni giorno, quante regate e chi c'era.
+- **Esporta / backup:** tre file per Excel (regate e risultati, riepilogo partecipanti, presenze), più una copia di sicurezza `.json`. Con **Ripristina o unisci** si recupera il backup o si uniscono gli archivi di più istruttori, senza doppioni.
+- **Privacy:** tutto resta solo su questo dispositivo, senza server. Se si cancellano i dati del browser l'archivio si perde, quindi conviene fare una copia di sicurezza ogni tanto. Il pulsante **Cancella tutto l'archivio** chiede conferma con un secondo tocco.
 
 ## Punti, livelli e classifica (novità 1.0)
 Funziona come Duolingo: premia sia i risultati sia la costanza.
