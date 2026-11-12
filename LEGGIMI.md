@@ -28,6 +28,7 @@ Il pacchetto `Sail Academy-1.0.zip` contiene tutto ciò che serve. La procedura 
 | Prodiere: "Pronti!" / cambia lato | Pulsante giallo | Spazio o Invio |
 | Spi su / giù (420, ragazzi e adulti) | Pulsante "Issa spi" | Q |
 | Carrello del fiocco (adulti, 420 e Hobie 16) | Pulsante "Carrello" | L |
+| Protestare (regola 61.1) | Pulsante rosso 🚩 Protesto | – |
 | Ricentra la barca | ◎ o doppio tocco sul mare | C o doppio clic |
 | Suono del vento sì/no | ☰ → Suono del vento | U |
 | Vista timoniere / prodiere | 👁 o tocco sulla finestrella | I |
@@ -53,6 +54,7 @@ Funziona come Duolingo: premia sia i risultati sia la costanza.
 ## Novità della versione 1.0
 - **Spinnaker sul 420** (categorie ragazzi e adulti; i bambini navigano senza). Si issa al lasco largo e in poppa con il pulsante **Issa spi** o il tasto **Q** e richiede circa 3 secondi, sia per issarlo sia per ammainarlo. Ben regolato fa guadagnare fino al 20% di velocità. Se si orza sotto i 95° dal vento la barca straorza e quasi si ferma. In equipaggio lo issa chi preme il pulsante e la chiamata "Issa lo spi!" arriva a tutti; con lo spi su, la barra del prodiere regola la scotta dello spi e il fiocco segue la randa. Si regola come in mare: si lasca finché il bordo d'attacco fa un piccolo ricciolo, poi si cazza un filo; se si lasca troppo lo spi collassa. Anche le barche del computer lo usano e lo ammainano prima della boa.
 - **Carrello del fiocco** (solo adulti, 420 e Hobie 16): tre posizioni, avanti, centro e indietro. Va avanti con poco vento (meno di 8 nodi), al centro con vento medio, indietro con più di 14 nodi, per aprire la balumina e sventare. Con il carrello troppo indietro si rompe per primo il filetto in alto, con il carrello troppo avanti quello in basso: il gioco lo mostra e lo spiega.
+- **Pulsante 🚩 Protesto sempre visibile** durante la regata, per il timoniere. Mostra gli incidenti degli ultimi 60 secondi (incroci ravvicinati e contatti) con la barca coinvolta: si sceglie e si protesta. Il numero tra parentesi dice quanti incidenti si possono protestare. Come nella regola 61.1, si protesta subito dopo il fatto. Resta anche la domanda automatica dopo un incrocio stretto. Poi decide la giuria (automatica o l'istruttore), anche quando si protesta una barca che in realtà aveva ragione.
 - **Schermata "Info, privacy e crediti"** (link in fondo al menu): versione, informativa privacy, avvertenze e licenze.
 - **Installabile come app** quando è pubblicata su un sito https: icona sulla schermata Home, apertura a schermo intero, avvio anche senza rete per allenamento, missioni e scuola vela (il gioco online richiede comunque Internet).
 - Corretto: il prodiere non vedeva la riga verde del punto giusto sulla barra della scotta.

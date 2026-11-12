@@ -98,6 +98,7 @@ button{ -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; 
 #banner{ position:absolute; left:50%; top:calc(max(8px, env(safe-area-inset-top)) + 66px); transform:translateX(-50%); width:min(560px, 94vw); background:rgba(255,255,255,.97); color:var(--ink); border-radius:14px; padding:10px 14px; font-size:14.5px; font-weight:600; box-shadow:0 8px 22px rgba(0,0,0,.3); display:none; pointer-events:none; line-height:1.35; z-index:3; }
 #banner .rn{ display:inline-block; background:var(--navy); color:#fff; border-radius:6px; padding:1px 7px; font-size:12px; margin-right:6px; }
 #banner.warn{ border-left:6px solid var(--acc); } #banner.pen{ background:#fff0f0; border-left:6px solid var(--bad); } #banner.good{ background:#effaf0; border-left:6px solid var(--ok); }
+#bProt{ display:none; align-self:flex-end; border:0; border-radius:12px; padding:7px 11px; font-weight:900; font-size:13px; background:#c62828; color:#fff; box-shadow:0 3px 10px rgba(0,0,0,.3); }
 #protBox{ position:absolute; left:50%; transform:translateX(-50%); top:38%; display:flex; flex-direction:column; gap:6px; align-items:center; width:min(380px, 88vw); z-index:4; pointer-events:none; }
 #protBox .pc{ background:rgba(255,255,255,.97); border-radius:14px; padding:9px 11px; font-size:13px; font-weight:600; box-shadow:0 8px 22px rgba(0,0,0,.35); width:100%; text-align:center; pointer-events:auto; color:var(--ink); }
 #protBox button{ border:0; border-radius:11px; padding:10px 13px; font-weight:800; font-size:14px; margin:6px 3px 0; }
@@ -363,6 +364,7 @@ table.lg tr.me{ background:#fff6d6; }
       <div class="instcard glass" id="instCard"><div class="tiprow"><div id="tip"></div><button class="ib sm" id="bInst" title="Strumenti">▾</button></div><canvas id="inst"></canvas></div>
       <div class="ctrlcol" id="ctrlCol">
         <button id="bPen"></button>
+        <button id="bProt" title="Protesto (regola 61.1)">🚩 <span id="bProtT"></span></button>
         <div id="callBar"></div>
         <div id="crewPad" class="glass">
           <div class="cpTitle" id="cpTitle"></div>
@@ -1542,6 +1544,7 @@ class Race {
         this.separate(a, b);
         if (!P.inC && (this.t - (P.hitT ?? -99)) > 3){
           P.hitT = this.t;
+          if (row) this.logEnc(this.snapshot(a, b, row, 0), true);
           if (row && this.ruleActive(row.kc, row.rule)) this.givePenalty(row.kc, row.rule, { contact: (row.kc===a?b:a).name });
           else if (row) this.say(row.kc, 'r14');
         }
@@ -1559,11 +1562,19 @@ class Race {
         }
         if (P.close && sd > 0.95*avgL){
           P.close = false;
+          if (P.snap) this.logEnc(P.snap, P.hadC);
           if (!P.hadC && P.snap && this.t - (P.encT ?? -99) > 5){ P.encT = this.t; this.onEncounter && this.onEncounter(P.snap); }
           P.snap = null;
         }
       }
     }
+  }
+  // registro degli incidenti recenti: serve al pulsante "Protesto" (regola 61.1: si protesta subito dopo il fatto)
+  logEnc(snap, contact){
+    if (!this.encLog) this.encLog = [];
+    snap.contact = !!contact;
+    this.encLog = this.encLog.filter(e => this.t - e.t < 90 && e.id !== snap.id);
+    this.encLog.push(snap);
   }
   headingChange(b, sec){
     const h = b._hh; if (!h || !h.length) return 0;
@@ -3609,6 +3620,21 @@ function onEncounter(enc){
     }
   }
 }
+// pulsante "Protesto": scegli l'incidente degli ultimi 60 secondi e la barca da protestare
+function openProtestPicker(){
+  const R = App.race, me = R && R.me(); if (!me || R.over) return;
+  const mine = (R.encLog || []).filter(e => (e.kc === me.id || e.row === me.id) && R.t - e.t <= 60 && !App.protests.has(e.id + '_' + me.id)).slice(-3).reverse();
+  if (!mine.length){
+    protCard({ key:'pick', ttl: 7000, html: tb('Nessun incrocio ravvicinato o contatto negli ultimi 60 secondi. Si protesta solo per un fatto avvenuto vicino a te, subito dopo (regola 61.1: grida «Protesto!» e alza la bandiera rossa).','No close crossing or contact in the last 60 seconds. You can only protest an incident near you, right after it happens (rule 61.1: hail “Protest!” and show the red flag).'), buttons: [[tx('Ho capito','OK'), 'bjury', null]] });
+    return;
+  }
+  mine.forEach(e => {
+    const other = e.kc === me.id ? e.row : e.kc, ago = Math.round(R.t - e.t);
+    protCard({ key:'pick' + e.id, ttl: 10000,
+      html: tb(`${e.contact ? 'Contatto' : 'Incrocio ravvicinato'} con <b>${esc(boatName(other))}</b>, ${ago} s fa. Protesti?`, `${e.contact ? 'Contact' : 'Close crossing'} with <b>${esc(boatName(other))}</b>, ${ago} s ago. Protest?`),
+      buttons: [[tx('PROTESTO!','PROTEST!'), 'bprot', () => startProtest(e, me.id, other)], [tx('Annulla','Cancel'), 'bjury', null]] });
+  });
+}
 function startProtest(enc, byId, againstId){
   const R = App.race; if (!R) return;
   const p = { id: enc.id + '_' + byId, enc, by: byId, against: againstId, byName: boatName(byId), againstName: boatName(againstId), status:'aperta', t: R.t };
@@ -3866,6 +3892,8 @@ function bindControls(){
   $('cpBig').onclick = () => { const a = $('cpBig').dataset.a; const R = App.race, b = R && R.boat(myBoatId());
     if (a === 'pronti') sendCall('pronti');
     else if (a === 'switch' && b){ const target = b.tackSide !== App.mustSwitch?.from ? b.tackSide : -(App.mustSwitch?.from || 1); setMyPos({ side: target }); } };
+  $('bProt').setAttribute('tabindex','-1'); $('bProt').addEventListener('mousedown', e => e.preventDefault());
+  $('bProt').onclick = () => openProtestPicker();
   $('bPen').onclick = () => { const b = App.race && App.race.me(); if (b) b.startPenaltyTurns(); };
   $('sheetAuto').onclick = () => { const b = App.race && App.race.me(); if (!b) return; if (App.mission && App.mission.M.id === 'filetti') return; b.autoSheet = !b.autoSheet; };
   const sb = $('sheetBox');
@@ -4495,6 +4523,9 @@ function updateHud(R, b, cat){
     if (leadV){ const t = tx('Carrello: ','Lead: ') + (b.lead < 0 ? tx('avanti','fwd') : b.lead > 0 ? tx('indietro','aft') : tx('centro','mid')); if ($('bLead').textContent !== t) $('bLead').textContent = t; }
     const showPen = b.penalty > 0 && App.myRole === 'helm' && b.cat !== 'adulti';
     $('bPen').style.display = showPen ? 'block' : 'none';
+    const canProt = App.myRole === 'helm' && b.started !== undefined && !R.over && !b.finished && R.t > -4*(R.spm||60) && !App.mission;
+    $('bProt').style.display = canProt ? 'block' : 'none';
+    if (canProt){ const n = (R.encLog || []).filter(e => (e.kc === b.id || e.row === b.id) && R.t - e.t <= 60).length; const t = tx('Protesto','Protest') + (n ? ' (' + n + ')' : ''); if ($('bProtT').textContent !== t) $('bProtT').textContent = t; }
     $('bPen').textContent = tx('FAI IL GIRO','DO THE TURN') + ' (' + b.penalty + ')';
   }
   // sul computer: se la pagina non ha la tastiera (per esempio dentro un'altra app), lo si dice
