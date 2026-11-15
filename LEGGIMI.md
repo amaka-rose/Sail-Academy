@@ -1,4 +1,4 @@
-# Sail Academy – versione 1.2
+# Sail Academy – versione 1.5.2
 
 Gioco didattico di regata per la vela preagonistica. Si gioca su tablet, PC e telefono (meglio in orizzontale). È un file unico, `index.html`, e non serve installare niente.
 
@@ -29,11 +29,62 @@ Il pacchetto `Sail Academy-1.0.zip` contiene tutto ciò che serve. La procedura 
 | Spi su / giù (420, ragazzi e adulti) | Pulsante "Issa spi" | Q |
 | Carrello del fiocco (adulti, 420 e Hobie 16) | Pulsante "Carrello" | L |
 | Protestare (regola 61.1) | Pulsante rosso 🚩 Protesto | – |
+| Telecomando (solo comandi grandi) | ☰ → 📱 Modalità telecomando | – |
+| TV: segui una barca / panoramica | Telecomando TV ◀ ▶ / OK | ← → / Invio |
 | Ricentra la barca | ◎ o doppio tocco sul mare | C o doppio clic |
 | Suono del vento sì/no | ☰ → Suono del vento | U |
 | Vista timoniere / prodiere | 👁 o tocco sulla finestrella | I |
 | Giro di penalità | FAI IL GIRO | P |
 | Vista | Panoramica, ＋, － | V, +, − |
+
+## Correzione 1.5.2 – barche più realistiche
+- **Vista dall'alto**: scafi bianchi con la falchetta (il bordo) e una fascia sulla vela nel colore del giocatore, timone e barra che si muovono con i comandi, persone in scala reale.
+  - **Optimist**: prua a specchio, interno aperto, panca, cassa della deriva, vela a tarchia con il picco.
+  - **ILCA**: scafo stretto, coperta liscia, pozzetto piccolo a poppa, trasto a V.
+  - **420**: pozzetto lungo, sartie, trasto, fiocco.
+  - **Hobie 16**: due scafi a banana con fascia colorata, trampolino, traverse, briglia e due timoni collegati.
+  - **Techno 293**: tavola con pad e strap per i piedi, boma a wishbone.
+- **Vista timoniere**: coperta diversa per ogni classe (interno dell'Optimist, coperta stretta dell'ILCA con il trasto, trampolino e scafi del catamarano, tavola e wishbone con le mani del windsurf) e mano sulla prolunga del timone.
+
+## Correzione 1.5.1 – standby e telefonate
+- **Schermo sempre acceso** mentre si è nella stanza e durante la regata, su tutti i dispositivi. Usa la funzione "wake lock" dei browser e, sugli iPhone meno recenti, un video muto invisibile. Uscendo dalla regata lo schermo torna a spegnersi normalmente.
+- **Pilota automatico per chi si assenta.** Se un giocatore risponde a una telefonata, passa a un'altra app o blocca il telefono, dopo 4 secondi la sua barca continua guidata dal computer e la regata non si ferma per gli altri. Tutti vedono "💤 Andrea ha il telefono in pausa"; sulla TV accanto al nome compare 💤.
+- **Ritorno:** quando il giocatore torna nel gioco riprende il timone dal punto in cui il pilota automatico ha portato la barca. Il risultato resta suo, come giocatore e non come barca del computer.
+- **Chi ha creato la stanza** fa da "arbitro": se è il suo telefono ad andare in pausa, la regata si ferma per tutti finché non torna. Per questo conviene far creare la stanza a un **PC o alla TV**, che non vanno in standby.
+
+## Novità 1.5 – Proiettare su TV e telefono come telecomando
+**📺 Proietta su TV** (pulsante nel menu). Sullo schermo grande scegli una delle due strade:
+1. **La TV crea la stanza** (serve l'accesso da amministratore o da istruttore su quel dispositivo). La TV mostra il codice in grande e un **QR**: i ragazzi lo inquadrano con il telefono ed entrano direttamente. Poi la TV mostra la regata con la **classifica in diretta**, il tempo, il vento e le notizie, senza comandi.
+2. **La TV guarda una stanza** creata da altri: si scrive il codice e la TV entra come spettatore.
+
+- **Durante la regata** si usano il telecomando della TV o la tastiera: ◀ ▶ per seguire una barca, OK/Invio per tornare alla panoramica.
+- **Come collegare la TV:**
+  - un PC con cavo **HDMI**: è il modo più affidabile;
+  - **Chromecast**: da Chrome sul PC, "Trasmetti… → scheda";
+  - **AirPlay**: da Mac o iPad verso Apple TV o TV compatibili;
+  - il **browser della smart TV**. Qui il gioco online dipende da cosa supporta il browser, quindi va provato.
+- **📱 Modalità telecomando** (☰ sul telefono): la mappa sparisce e restano comandi grandi, velocità, posizione, numero della boa, una bussola con la direzione della boa e del vento, l'andatura e il consiglio sulla vela. Quando la regata è proiettata su una TV, il telefono lo propone da solo.
+- **QR nella stanza:** anche senza TV, chi crea una stanza ora vede un QR. Inquadrandolo il telefono apre il gioco ed entra nella stanza.
+
+## Novità 1.4 – Amministratore, istruttori, accesso con PIN
+- **⚙️ Amministratore** (link in fondo al menu), con cinque schede: Panoramica, Giocatori, Istruttori, Statistiche, Impostazioni. Da qui si gestisce tutto il gioco. Si può proteggere con un PIN.
+- **Giocatori con nome utente e PIN**: chiedono l'ok solo la prima volta. Con lo stesso nome e PIN entrano da qualsiasi dispositivo fino alla scadenza, che **decide l'amministratore**: la durata predefinita e anche la data di ciascuno. Il nome utente non può essere preso da altri, perché senza il PIN giusto non si entra.
+- **🧑‍🏫 Area istruttore**: più istruttori, ciascuno con nome, cognome e PIN. Sono attivi dopo l'autorizzazione dell'amministratore, per il periodo scelto, e **revocabili** in qualsiasi momento.
+- Nelle stanze online i giocatori approvati entrano **senza ulteriore richiesta**. Chi crea la stanza può comunque togliere la spunta "Fai entrare tutti" e decidere uno per uno.
+- Il nome utente nel menu è bloccato su quello approvato. Con "cambia utente" si passa a un altro account sullo stesso dispositivo.
+
+## Correzione 1.3.1 – audio su iPhone e iPad
+- Il suono ora parte anche con l'interruttore **silenzioso** dell'iPhone attivo: su Safari 17 e successivi tramite la sessione audio "riproduzione", sugli iOS più vecchi tramite un audio muto in sottofondo.
+- L'audio si riattiva da solo al primo tocco dopo lo schermo bloccato, una telefonata o il passaggio a un'altra app.
+- La voce delle chiamate ("Pronti a virare?") viene sbloccata al primo tocco, come richiede iOS.
+- Accendendo ☰ → Suono del vento si sente un bip di prova e la voce dice "Audio attivo".
+
+## Registro giocatori e ok dell'organizzatore (novità 1.3)
+- **Accesso con approvazione:** con il registro attivo (vedi REGISTRO.md), ogni ragazzo la prima volta scrive soprannome e categoria e chiede l'ok. L'organizzatore approva dall'Area organizzatore e il telefono si sblocca da solo.
+- **Chi gioca e quanto:** ogni sessione (regata, missione, scuola vela, stanza online, con il risultato) arriva nel Foglio Google dell'organizzatore. Nel gioco si vedono le richieste, i minuti degli ultimi 7 giorni e totali, l'ultimo accesso e le ultime sessioni.
+- **Ok per ogni partita online:** chi crea la stanza vede "🙋 Nome chiede di entrare" e tocca ✅ per farlo entrare oppure ✖ per rifiutarlo. C'è anche l'opzione "Fai entrare tutti senza chiedermelo".
+- **Ok per le stanze degli istruttori:** se l'opzione è attiva, quando un istruttore apre una stanza l'organizzatore riceve la richiesta e la approva in tempo reale.
+- **Sospendere** un giocatore: con un tocco dal pannello o dal Foglio.
 
 ## Organizzatore, istruttori e giuria (novità 1.2)
 **Chi fa cosa**
@@ -195,7 +246,7 @@ Nella regata **mista** ognuno gioca con le regole e gli aiuti della propria cate
 
 - **Wi-Fi delle scuole:** alcune reti bloccano le connessioni dirette tra dispositivi. Se la stanza non si crea o nessuno riesce a entrare, usate l'hotspot di un telefono. Per un uso esteso nei camp conviene un piccolo server di collegamento proprio (PeerJS) e un server TURN.
 - Il server pubblico di PeerJS è gratuito ma senza garanzie.
-- Su iPhone, un dispositivo con lo schermo spento o con un'altra app aperta si ferma: la regata riparte quando torna in primo piano.
+- Se va in pausa il telefono di chi ha creato la stanza, la regata si ferma per tutti finché non torna: meglio far creare la stanza a un PC o alla TV. Gli altri giocatori, se si assentano, passano al pilota automatico.
 - Alcune regole sono semplificate, per esempio la 18 e le eccezioni della 16 e della 17. In caso di dubbio vale il testo ufficiale.
 
 ## 6. Prima di usarlo nei camp FIV
