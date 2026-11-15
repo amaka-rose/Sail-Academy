@@ -43,7 +43,7 @@ function hello_(q){
   const user = clean_(q.user, 14), pin = pin_(q.pin), dev = clean_(q.dev, 40);
   if (!user || pin.length < 4) return { ok:false, err:'dati' };
   const sh = sheet_(SH_P, H_P), r = findRow_(sh, user), now = new Date(), ph = hash_('p|' + user.toLowerCase() + '|' + pin);
-  if (!r){ sh.appendRow([user, clean_(q.cat, 12), 'IN ATTESA', now, '', '', now, 0, 0, dev, '', ph]); return { ok:true, status:'IN ATTESA', roomApproval: opt_('roomApproval', true) }; }
+  if (!r){ sh.appendRow([user, clean_(q.cat, 12), 'IN ATTESA', now, '', '', now, 0, 0, dev, '', ph]); notify_('Nuovo giocatore: ' + user, 'Il giocatore "' + user + '"' + (q.cat ? ' (categoria ' + clean_(q.cat, 12) + ')' : '') + ' chiede di poter giocare.'); return { ok:true, status:'IN ATTESA', roomApproval: opt_('roomApproval', true) }; }
   const row = sh.getRange(r, 1, 1, H_P.length).getValues()[0];
   if (!row[11]) sh.getRange(r, 12).setValue(ph);                      // PIN azzerato dall'amministratore: vale il nuovo
   else if (String(row[11]) !== ph) return { ok:true, status:'PIN' };  // nome già usato da un altro, o PIN sbagliato
@@ -54,7 +54,7 @@ function hello_(q){
   if (dev && devs.indexOf(dev) < 0){ devs.push(dev); sh.getRange(r, 10).setValue(devs.slice(-10).join(',')); }
   if (q.cat) sh.getRange(r, 2).setValue(clean_(q.cat, 12));
   sh.getRange(r, 7).setValue(now);
-  if (st === 'SCADUTO'){ sh.getRange(r, 3).setValue('IN ATTESA'); sh.getRange(r, 11).setValue('rinnovo richiesto il ' + fmt_(now)); st = 'IN ATTESA'; }
+  if (st === 'SCADUTO'){ sh.getRange(r, 3).setValue('IN ATTESA'); sh.getRange(r, 11).setValue('rinnovo richiesto il ' + fmt_(now)); st = 'IN ATTESA'; notify_('Rinnovo: ' + user, 'L\'accesso di "' + user + '" è scaduto e chiede di essere rinnovato.'); }
   return { ok:true, status: st, exp: exp ? exp.getTime() : null, roomApproval: opt_('roomApproval', true) };
 }
 function session_(q){
@@ -95,7 +95,7 @@ function instReg_(q){
   const nome = clean_(q.nome, 30), cog = clean_(q.cognome, 30), pin = pin_(q.pin);
   if (!nome || !cog || pin.length < 4) return { ok:false, err:'dati' };
   const sh = sheet_(SH_I, H_I), k = instKey_(nome, cog), r = findRow_(sh, k), now = new Date(), ph = hash_('i|' + k + '|' + pin);
-  if (!r){ sh.appendRow([k, nome, cog, 'IN ATTESA', now, '', '', now, 0, '', ph, '']); return { ok:true, status:'IN ATTESA' }; }
+  if (!r){ sh.appendRow([k, nome, cog, 'IN ATTESA', now, '', '', now, 0, '', ph, '']); notify_('Nuovo istruttore: ' + nome + ' ' + cog, nome + ' ' + cog + ' chiede l\'accesso come istruttore.'); return { ok:true, status:'IN ATTESA' }; }
   const row = sh.getRange(r, 1, 1, H_I.length).getValues()[0];
   if (!row[10]) sh.getRange(r, 11).setValue(ph);
   else if (String(row[10]) !== ph) return { ok:true, status:'PIN' };
@@ -124,6 +124,7 @@ function roomReq_(q){
   if (q.token){ const s = instCheck_({ token: q.token }); if (s.status === 'ATTIVO'){ who = s.name; role = 'istruttore'; const ish = sheet_(SH_I, H_I), r = findRow_(ish, s.name.toLowerCase()); if (r) ish.getRange(r, 9).setValue((Number(ish.getRange(r, 9).getValue()) || 0) + 1); } else return { ok:true, status:'NON AUTORIZZATO' }; }
   const st = opt_('roomApproval', true) ? 'IN ATTESA' : 'APPROVATA';
   sh.appendRow([id, new Date(), who, role, st, '']);
+  if (st === 'IN ATTESA') notify_('Stanza da approvare: ' + who, who + ' (' + role + ') vuole aprire una stanza online e aspetta il tuo ok.');
   return { ok:true, req:id, status:st };
 }
 function roomStat_(q){ const sh = sheet_(SH_R, H_R), r = findRow_(sh, clean_(q.req, 40)); return r ? { ok:true, status:String(sh.getRange(r, 5).getValue()).toUpperCase() } : { ok:false, err:'req' }; }
@@ -168,9 +169,25 @@ function setRoom_(q){ const sh = sheet_(SH_R, H_R), r = findRow_(sh, clean_(q.re
 function setOpt_(q){
   const P = PropertiesService.getScriptProperties();
   if (q.roomApproval != null) P.setProperty('roomApproval', q.roomApproval ? '1' : '0');
+  if (q.mail != null) P.setProperty('mail', q.mail ? '1' : '0');
   if (q.playerDays) P.setProperty('playerDays', String(Math.max(1, Math.min(3650, Number(q.playerDays)))));
   return { ok:true };
 }
+
+// ======================= NOTIFICHE =======================
+// Una e-mail all'amministratore (il proprietario dello script) per ogni richiesta nuova.
+// Con l'app Gmail sul telefono arriva come notifica. Per spegnerle: Impostazioni progetto →
+// Proprietà script → aggiungi "mail" con valore 0.
+const SITE_URL = 'https://amaka-rose.github.io/Sail-Academy/';
+function notify_(subject, text){
+  try {
+    if (!opt_('mail', true)) return;
+    const to = Session.getEffectiveUser().getEmail(); if (!to) return;
+    MailApp.sendEmail({ to: to, subject: '⛵ Sail Academy – ' + subject, name: 'Sail Academy',
+      body: text + '\n\nPer approvare apri il gioco → ⚙️ Amministratore → Panoramica:\n' + SITE_URL + '\n\noppure scrivi lo stato direttamente nel foglio del registro.' });
+  } catch(e){}
+}
+function provaNotifica(){ notify_('prova notifiche', 'Se leggi questa e-mail le notifiche funzionano.'); }
 
 // ======================= UTILITÀ =======================
 function opt_(k, def){ const v = PropertiesService.getScriptProperties().getProperty(k); if (v == null) return def; if (v === '1') return true; if (v === '0') return false; return v; }
