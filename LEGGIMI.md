@@ -90,13 +90,15 @@ Il pacchetto `Sail Academy-1.0.zip` contiene tutto ciò che serve. La procedura 
 - **Accesso con approvazione:** con il registro attivo (vedi REGISTRO.md), ogni ragazzo la prima volta scrive soprannome e categoria e chiede l'ok. L'organizzatore approva dall'Area organizzatore e il telefono si sblocca da solo.
 - **Chi gioca e quanto:** ogni sessione (regata, missione, scuola vela, stanza online, con il risultato) arriva nel Foglio Google dell'organizzatore. Nel gioco si vedono le richieste, i minuti degli ultimi 7 giorni e totali, l'ultimo accesso e le ultime sessioni.
 - **Ok per ogni partita online:** chi crea la stanza vede "🙋 Nome chiede di entrare" e tocca ✅ per farlo entrare oppure ✖ per rifiutarlo. C'è anche l'opzione "Fai entrare tutti senza chiedermelo".
-- **Ok per le stanze degli istruttori:** se l'opzione è attiva, quando un istruttore apre una stanza l'organizzatore riceve la richiesta e la approva in tempo reale.
+- **Stanze senza richieste:** giocatori approvati e istruttori attivi aprono le stanze subito; l'ok dell'organizzatore vale fino alla scadenza del loro accesso. Ogni stanza finisce nel registro con durata, regate, partecipanti e numero iniziale e finale.
+- **Giuria:** può farla solo un istruttore o l'organizzatore. Nelle stanze dei giocatori la giuria è automatica: decide il gioco, secondo il regolamento.
 - **Sospendere** un giocatore: con un tocco dal pannello o dal Foglio.
 
 ## Organizzatore, istruttori e giuria (novità 1.2)
 **Chi fa cosa**
 - **Organizzatore**: crea le stanze e decide chi altro può crearle.
-- **Istruttore**: fa da giuria; può creare stanze solo con un **pass** dell'organizzatore.
+- **Istruttore**: fa da giuria e crea stanze (con l'accesso istruttore o con un **pass** dell'organizzatore).
+- **Giocatore approvato**: crea stanze e ci gioca; non fa da giuria.
 - **Ragazzi**: entrano nelle stanze con il codice. Da soli possono sempre giocare, fare le missioni e la scuola vela.
 
 **Proteggere il sito (una volta sola, dal dispositivo dell'organizzatore)**

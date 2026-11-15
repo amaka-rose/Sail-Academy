@@ -32,20 +32,14 @@ Repository → **Add file → Upload files** → trascina i nuovi file, che sost
 **Commit changes**. Il sito si aggiorna da solo in pochi minuti. Sui dispositivi su cui il gioco è installato, la nuova
 versione arriva alla prima apertura con Internet; se serve, si chiude e si riapre una seconda volta.
 
-## B. Alternativa veloce: Netlify Drop
-1. Apri https://app.netlify.com/drop e trascina la cartella `SailAcademy-1.5`.
-2. Ottieni subito un link `…netlify.app`.
-3. **Importante:** senza account il sito viene **cancellato dopo circa un'ora**. Per tenerlo crea subito l'account
-   gratuito dal pulsante di rivendicazione ("claim") del sito. Puoi anche cambiargli nome, per esempio `sailacademy.netlify.app`.
-
-## C. Installarlo sui dispositivi (facoltativo, consigliato per i ragazzi)
+## B. Installarlo sui dispositivi (facoltativo, consigliato per i ragazzi)
 - **iPhone/iPad:** apri il link in **Safari** → pulsante Condividi → **Aggiungi alla schermata Home**.
 - **Android:** apri il link in **Chrome** → menu ⋮ → **Installa app** (o *Aggiungi a schermata Home*).
 - **PC (Chrome/Edge):** icona di installazione a destra nella barra degli indirizzi.
 
 L'app si apre a schermo intero e, dopo la prima apertura, funziona anche senza rete per allenamento, missioni e scuola vela.
 
-## D. Cose da sapere prima di usarlo con i ragazzi
+## C. Cose da sapere prima di usarlo con i ragazzi
 - **Wi-Fi delle scuole o dei circoli:** alcune reti bloccano le connessioni dirette tra dispositivi. Se la stanza
   non si crea o nessuno riesce a entrare, collega tutti all'hotspot di un telefono.
 - **Collegamento:** per trovarsi, i dispositivi usano il servizio pubblico gratuito PeerJS, che funziona ma senza
@@ -59,7 +53,7 @@ L'app si apre a schermo intero e, dopo la prima apertura, funziona anche senza r
 - **Nome:** prima di diffonderlo pubblicamente, verifica che "Sail Academy" non sia già un marchio registrato
   (banca dati UIBM / EUIPO). È un nome usato anche da alcune scuole vela: se crea confusione, si cambia in un minuto.
 
-## E. Proteggere il sito: solo tu (e chi autorizzi) create le stanze
+## D. Proteggere il sito: solo tu (e chi autorizzi) create le stanze
 1. Apri il sito pubblicato sul **tuo** telefono o PC.
 2. In fondo al menu tocca **⚙️ Amministratore**, poi **Crea la chiave dell'organizzatore**.
 3. Tocca **⬇️ organizzatore.json** e carica il file su GitHub insieme agli altri (Add file → Upload files → Commit changes).
@@ -69,5 +63,5 @@ L'app si apre a schermo intero e, dopo la prima apertura, funziona anche senza r
 
 Attenzione: quando aggiorni il gioco a una versione nuova, **non cancellare `organizzatore.json`** dal repository.
 
-## F. Registro giocatori (facoltativo)
+## E. Registro giocatori (facoltativo)
 Per approvare i ragazzi e vedere chi gioca e quanto, segui **REGISTRO.md**. Ti serve circa un quarto d'ora con un account Google. La cartella `registro/` **non** va caricata su GitHub: serve solo a te per copiare lo script.

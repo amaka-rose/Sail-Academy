@@ -2,7 +2,7 @@
  * SAIL ACADEMY – Registro (Google Apps Script)
  * ------------------------------------------------------------------
  * Va incollato in: Foglio Google → Estensioni → Apps Script (file Codice.gs).
- * Crea da solo i fogli: Giocatori, Istruttori, Sessioni, Stanze.
+ * Crea da solo i fogli: Giocatori, Istruttori, Sessioni, Stanze create, Progressi.
  *
  * PRIMA DI PUBBLICARE cambia la parola chiave qui sotto: è la "password"
  * dell'amministratore. Si scrive solo nella sezione Amministratore del TUO
@@ -10,14 +10,15 @@
  */
 const ADMIN_KEY = 'CAMBIA-QUESTA-PAROLA';
 
-const SH_P = 'Giocatori', SH_I = 'Istruttori', SH_S = 'Sessioni', SH_R = 'Stanze', SH_G = 'Progressi';
+const SH_P = 'Giocatori', SH_I = 'Istruttori', SH_S = 'Sessioni', SH_R = 'Stanze create', SH_G = 'Progressi';
 const H_G = ['Nome utente','Aggiornato','Dati (punti, livello, serie, traguardi, stelle)'];
 // Giocatori:  A nome utente, B categoria, C stato, D richiesta il, E approvato il, F scade il, G ultimo accesso, H sessioni, I minuti, J dispositivi, K note, L PIN codificato
 const H_P = ['Nome utente','Categoria','Stato','Richiesta il','Approvato il','Scade il','Ultimo accesso','Sessioni','Minuti totali','Dispositivi','Note','PIN (codificato)'];
 // Istruttori: A chiave, B nome, C cognome, D stato, E richiesta il, F attivo dal, G scade il, H ultimo accesso, I stanze aperte, J note, K PIN codificato, L token
 const H_I = ['Chiave','Nome','Cognome','Stato','Richiesta il','Attivo dal','Scade il','Ultimo accesso','Stanze aperte','Note','PIN (codificato)','Token'];
 const H_S = ['Inizio','Fine','Nome utente','Dispositivo','Attività','Dettaglio','Stanza','Minuti'];
-const H_R = ['ID richiesta','Richiesta il','Chi','Ruolo','Stato','Deciso il'];
+// Stanze create: una riga per stanza online, aggiornata da chi la crea finché resta aperta
+const H_R = ['ID','Codice stanza','Creata il','Creata da','Ruolo','Ultimo aggiornamento','Durata (min)','Regate','N. iniziale','N. finale','N. massimo','Partecipanti','Stato'];
 // Stati giocatori: IN ATTESA, APPROVATO, BLOCCATO · Stati istruttori: IN ATTESA, ATTIVO, REVOCATO
 // Si possono cambiare anche a mano nel foglio (per esempio dall'app Fogli sul telefono).
 
@@ -28,7 +29,7 @@ function doPost(e){
     const q = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     const admin = ADMIN_KEY !== 'CAMBIA-QUESTA-PAROLA' && q.key === ADMIN_KEY;
     const A = {
-      hello: hello_, session: session_, progGet: progGet_, progPut: progPut_, roomReq: roomReq_, roomStat: roomStat_, instReg: instReg_, instCheck: instCheck_,
+      hello: hello_, session: session_, progGet: progGet_, progPut: progPut_, roomReq: roomReq_, roomStat: roomStat_, roomLog: roomLog_, instReg: instReg_, instCheck: instCheck_,
     };
     const ADM = { admin: adminList_, setPlayer: setPlayer_, setInst: setInst_, setRoom: setRoom_, setOpt: setOpt_ };
     if (A[q.a]) return out_(A[q.a](q));
@@ -43,7 +44,7 @@ function hello_(q){
   const user = clean_(q.user, 14), pin = pin_(q.pin), dev = clean_(q.dev, 40);
   if (!user || pin.length < 4) return { ok:false, err:'dati' };
   const sh = sheet_(SH_P, H_P), r = findRow_(sh, user), now = new Date(), ph = hash_('p|' + user.toLowerCase() + '|' + pin);
-  if (!r){ sh.appendRow([user, clean_(q.cat, 12), 'IN ATTESA', now, '', '', now, 0, 0, dev, '', ph]); notify_('Nuovo giocatore: ' + user, 'Il giocatore "' + user + '"' + (q.cat ? ' (categoria ' + clean_(q.cat, 12) + ')' : '') + ' chiede di poter giocare.'); return { ok:true, status:'IN ATTESA', roomApproval: opt_('roomApproval', true) }; }
+  if (!r){ sh.appendRow([user, clean_(q.cat, 12), 'IN ATTESA', now, '', '', now, 0, 0, dev, '', ph]); notify_('Nuovo giocatore: ' + user, 'Il giocatore "' + user + '"' + (q.cat ? ' (categoria ' + clean_(q.cat, 12) + ')' : '') + ' chiede di poter giocare.'); return { ok:true, status:'IN ATTESA', roomApproval: false }; }
   const row = sh.getRange(r, 1, 1, H_P.length).getValues()[0];
   if (!row[11]) sh.getRange(r, 12).setValue(ph);                      // PIN azzerato dall'amministratore: vale il nuovo
   else if (String(row[11]) !== ph) return { ok:true, status:'PIN' };  // nome già usato da un altro, o PIN sbagliato
@@ -55,7 +56,7 @@ function hello_(q){
   if (q.cat) sh.getRange(r, 2).setValue(clean_(q.cat, 12));
   sh.getRange(r, 7).setValue(now);
   if (st === 'SCADUTO'){ sh.getRange(r, 3).setValue('IN ATTESA'); sh.getRange(r, 11).setValue('rinnovo richiesto il ' + fmt_(now)); st = 'IN ATTESA'; notify_('Rinnovo: ' + user, 'L\'accesso di "' + user + '" è scaduto e chiede di essere rinnovato.'); }
-  return { ok:true, status: st, exp: exp ? exp.getTime() : null, roomApproval: opt_('roomApproval', true) };
+  return { ok:true, status: st, exp: exp ? exp.getTime() : null, roomApproval: false };
 }
 function session_(q){
   const list = Array.isArray(q.list) ? q.list.slice(0, 50) : [];
@@ -118,28 +119,50 @@ function instState_(sh, r){
 }
 
 // ======================= STANZE =======================
+// Chi è già autorizzato (giocatore approvato e non scaduto, istruttore attivo, amministratore)
+// apre le stanze senza chiedere: l'ok vale fino alla scadenza dell'accesso.
 function roomReq_(q){
-  const sh = sheet_(SH_R, H_R), id = 'R' + Date.now().toString(36) + Math.floor(Math.random()*1e4);
-  let who = clean_(q.nick, 40), role = 'giocatore';
-  if (q.token){ const s = instCheck_({ token: q.token }); if (s.status === 'ATTIVO'){ who = s.name; role = 'istruttore'; const ish = sheet_(SH_I, H_I), r = findRow_(ish, s.name.toLowerCase()); if (r) ish.getRange(r, 9).setValue((Number(ish.getRange(r, 9).getValue()) || 0) + 1); } else return { ok:true, status:'NON AUTORIZZATO' }; }
-  const st = opt_('roomApproval', true) ? 'IN ATTESA' : 'APPROVATA';
-  sh.appendRow([id, new Date(), who, role, st, '']);
-  if (st === 'IN ATTESA') notify_('Stanza da approvare: ' + who, who + ' (' + role + ') vuole aprire una stanza online e aspetta il tuo ok.');
-  return { ok:true, req:id, status:st };
+  const now = new Date();
+  let who = '', role = '';
+  if (ADMIN_KEY !== 'CAMBIA-QUESTA-PAROLA' && q.key === ADMIN_KEY){ who = clean_(q.nick, 40) || 'Amministratore'; role = 'amministratore'; }
+  else if (q.token){
+    const s = instCheck_({ token: q.token }); if (s.status !== 'ATTIVO') return { ok:true, status:'NON AUTORIZZATO' };
+    who = s.name; role = 'istruttore';
+    const ish = sheet_(SH_I, H_I), r = findRow_(ish, s.name.toLowerCase()); if (r) ish.getRange(r, 9).setValue((Number(ish.getRange(r, 9).getValue()) || 0) + 1);
+  } else {
+    const user = playerOk_(q); if (!user) return { ok:true, status:'NON AUTORIZZATO' };
+    const ps = sheet_(SH_P, H_P), row = ps.getRange(findRow_(ps, user), 1, 1, H_P.length).getValues()[0];
+    const exp = row[5] ? new Date(row[5]) : null;
+    if (String(row[2]).toUpperCase() !== 'APPROVATO' || (exp && exp < now)) return { ok:true, status:'NON AUTORIZZATO' };
+    who = user; role = 'giocatore';
+  }
+  const id = Utilities.getUuid();
+  sheet_(SH_R, H_R).appendRow([id, '', now, who, role, now, 0, 0, '', '', '', '', 'APERTA']);
+  return { ok:true, req:id, status:'APPROVATA' };
 }
-function roomStat_(q){ const sh = sheet_(SH_R, H_R), r = findRow_(sh, clean_(q.req, 40)); return r ? { ok:true, status:String(sh.getRange(r, 5).getValue()).toUpperCase() } : { ok:false, err:'req' }; }
+function roomStat_(q){ const sh = sheet_(SH_R, H_R), r = findRow_(sh, clean_(q.req, 40)); return r ? { ok:true, status:'APPROVATA' } : { ok:false, err:'req' }; }
+// Aggiornamento dalla stanza: partecipanti, numero iniziale/finale, regate, durata (calcolata sull'orologio del registro)
+function roomLog_(q){
+  const sh = sheet_(SH_R, H_R), r = findRow_(sh, clean_(q.req, 40)); if (!r) return { ok:false, err:'req' };
+  const row = sh.getRange(r, 1, 1, H_R.length).getValues()[0]; if (String(row[12]) === 'CHIUSA') return { ok:true };
+  const now = new Date(), t0 = new Date(row[2]), num = v => Math.max(0, Math.min(99, Number(v) || 0));
+  const names = (Array.isArray(q.names) ? q.names : []).slice(0, 40).map(n => clean_(n, 20)).filter(String).join(', ');
+  sh.getRange(r, 2, 1, 12).setValues([[clean_(q.code, 8), t0, row[3], row[4], now, Math.round((now - t0)/6000)/10, num(q.races), num(q.n0), num(q.n1), num(q.nmax), names, q.end ? 'CHIUSA' : 'APERTA']]);
+  return { ok:true };
+}
 
 // ======================= AMMINISTRATORE =======================
 function adminList_(){
   const P = sheet_(SH_P, H_P).getDataRange().getValues().slice(1).map(r => ({ id:r[0], cat:r[1], status:String(r[2]).toUpperCase(), since:t_(r[3]), approved:t_(r[4]), exp:t_(r[5]), last:t_(r[6]), n:r[7], min:r[8], devs:String(r[9] || '').split(',').filter(String).length, note:r[10] }));
   const I = sheet_(SH_I, H_I).getDataRange().getValues().slice(1).map(r => ({ id:r[0], nome:r[1], cognome:r[2], status:String(r[3]).toUpperCase(), since:t_(r[4]), from:t_(r[5]), exp:t_(r[6]), last:t_(r[7]), rooms:r[8], note:r[9] }));
-  const rooms = sheet_(SH_R, H_R).getDataRange().getValues().slice(1).map(r => ({ req:r[0], t:t_(r[1]), nick:r[2], role:r[3], status:String(r[4]).toUpperCase() })).filter(x => x.status === 'IN ATTESA');
+  const stale = Date.now() - 5*60e3;   // nessun aggiornamento da 5 minuti: la stanza si è chiusa senza salutare (telefono spento, rete persa)
+  const rooms = sheet_(SH_R, H_R).getDataRange().getValues().slice(1).slice(-150).reverse().map(r => ({ req:r[0], code:r[1], t0:t_(r[2]), by:r[3], role:r[4], t1:t_(r[5]), min:r[6], races:r[7], n0:r[8], n1:r[9], nmax:r[10], names:r[11], status: String(r[12]) === 'APERTA' && t_(r[5]) < stale ? 'INTERROTTA' : String(r[12]) }));
   const S = sheet_(SH_S, H_S).getDataRange().getValues().slice(1);
   const since7 = Date.now() - 7*864e5, week = {}, days = {};
   S.forEach(r => { const t = new Date(r[0]).getTime(); if (t >= since7){ week[String(r[2]).toLowerCase()] = (week[String(r[2]).toLowerCase()] || 0) + (Number(r[7]) || 0); } const d = Utilities.formatDate(new Date(r[0]), Session.getScriptTimeZone(), 'yyyy-MM-dd'); days[d] = (days[d] || 0) + (Number(r[7]) || 0); });
   P.forEach(p => p.week = Math.round((week[String(p.id).toLowerCase()] || 0)*10)/10);
   const recent = S.slice(-60).reverse().map(r => ({ t0:t_(r[0]), user:r[2], kind:r[4], det:r[5], room:r[6], min:r[7] }));
-  return { ok:true, players:P, instructors:I, rooms:rooms, recent:recent, days:days, opts:{ roomApproval: opt_('roomApproval', true), playerDays: Number(opt_('playerDays', 90)) } };
+  return { ok:true, players:P, instructors:I, rooms:rooms, recent:recent, days:days, opts:{ playerDays: Number(opt_('playerDays', 90)) } };
 }
 function setPlayer_(q){
   const sh = sheet_(SH_P, H_P), r = findRow_(sh, clean_(q.id, 14)); if (!r) return { ok:false, err:'id' };
@@ -175,7 +198,7 @@ function setOpt_(q){
 }
 
 // ======================= NOTIFICHE =======================
-// Una e-mail all'amministratore (il proprietario dello script) per ogni richiesta nuova.
+// Una e-mail all'amministratore (il proprietario dello script) per ogni nuovo giocatore o istruttore da approvare.
 // Con l'app Gmail sul telefono arriva come notifica. Per spegnerle: Impostazioni progetto →
 // Proprietà script → aggiungi "mail" con valore 0.
 const SITE_URL = 'https://amaka-rose.github.io/Sail-Academy/';

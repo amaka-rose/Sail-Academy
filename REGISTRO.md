@@ -5,7 +5,7 @@
 |---|---|---|
 | **Amministratore** (tu) | dal tuo dispositivo, che ha la chiave segreta | tutto: approva giocatori e istruttori, decide le durate, revoca, vede le statistiche, crea stanze |
 | **Istruttore** | **Area istruttore**: nome, cognome e PIN, dopo la tua autorizzazione, per il periodo che scegli | crea stanze online, fa da giuria, ha l'archivio delle regate fatte sul suo dispositivo |
-| **Giocatore** | **nome utente + PIN di 4 cifre**: la prima volta chiede l'ok, poi entra da qualsiasi dispositivo fino alla scadenza | gioca da solo, missioni, scuola vela, entra nelle stanze con il codice |
+| **Giocatore** | **nome utente + PIN di 4 cifre**: la prima volta chiede l'ok, poi entra da qualsiasi dispositivo fino alla scadenza | gioca da solo, missioni, scuola vela, entra nelle stanze con il codice e **crea stanze** senza chiederti altro fino alla scadenza; nelle sue stanze la giuria è **automatica** |
 
 Funziona tutto gratis: il Foglio Google è nel tuo Drive, lo script gira sul tuo account e il sito resta su GitHub.
 
@@ -27,10 +27,10 @@ Funziona tutto gratis: il Foglio Google è nel tuo Drive, lo script gira sul tuo
 ## 3. Collega il gioco al registro
 1. **⚙️ Amministratore → Impostazioni**: incolla URL e parola chiave e tocca **Salva**.
 2. Riscarica **organizzatore.json** e ricaricalo su GitHub. Contiene l'indirizzo del registro, **non** la parola chiave.
-3. Sempre in Impostazioni, scegli la **durata dell'accesso** dei giocatori (1 mese … 1 anno) e se gli istruttori devono chiederti l'ok **per ogni stanza**. Poi **Salva le regole**.
+3. Sempre in Impostazioni, scegli la **durata dell'accesso** dei giocatori (1 mese … 1 anno) Poi **Salva le regole**.
 
 ## 4. Uso quotidiano
-- **Panoramica**: numeri della settimana, richieste in attesa di giocatori, istruttori e stanze, con approvazione in un tocco. Per ogni richiesta scegli anche la **durata**.
+- **Panoramica**: numeri della settimana, richieste in attesa di giocatori e istruttori, stanze aperte in quel momento, con approvazione in un tocco. Per ogni richiesta scegli anche la **durata**.
 - **Giocatori**: per ciascuno vedi sessioni, minuti (ultimi 7 giorni e totali), quanti dispositivi usa e l'ultimo accesso. Puoi:
   - **cambiare la scadenza** dal calendario;
   - **sospendere** o **riattivare**;
@@ -38,6 +38,8 @@ Funziona tutto gratis: il Foglio Google è nel tuo Drive, lo script gira sul tuo
   - eliminare il giocatore.
 - **Istruttori**: richieste con scelta del periodo (1 settimana … 1 anno). Puoi **revocare** con effetto immediato, riattivare, cambiare la scadenza e azzerare il PIN. C'è anche il vecchio "pass a link", per chi non usa il registro.
 - **Statistiche**: minuti di gioco al giorno nelle ultime 2 settimane, i più assidui e le ultime sessioni.
+- **Stanze**: tutte le stanze create, con chi le ha aperte, codice, durata, regate disputate, **numero iniziale** (alla prima partenza), **finale** (alla chiusura) e **massimo** dei partecipanti, e i loro nomi. Gli stessi dati sono nel foglio **Stanze create**. "Interrotta" vuol dire che il telefono di chi l'ha creata si è spento o ha perso la rete senza chiudere la stanza.
+- **Avvisi via e-mail**: ricevi un'e-mail per ogni nuovo giocatore o istruttore da approvare e per ogni rinnovo.
 - **Alla scadenza** il giocatore torna "in attesa" e ti richiede l'ok. Gli istruttori scaduti o revocati non possono più creare stanze.
 - **Progressi dei giocatori**: il foglio *Progressi* tiene punti, livello, serie, traguardi e stelle di ciascun nome utente. Così i ragazzi li ritrovano su qualsiasi dispositivo.
 - **Dal Foglio** puoi fare tutto anche a mano, cambiando la colonna *Stato*: APPROVATO, BLOCCATO, ATTIVO, REVOCATO.
