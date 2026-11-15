@@ -10,7 +10,8 @@
  */
 const ADMIN_KEY = 'CAMBIA-QUESTA-PAROLA';
 
-const SH_P = 'Giocatori', SH_I = 'Istruttori', SH_S = 'Sessioni', SH_R = 'Stanze';
+const SH_P = 'Giocatori', SH_I = 'Istruttori', SH_S = 'Sessioni', SH_R = 'Stanze', SH_G = 'Progressi';
+const H_G = ['Nome utente','Aggiornato','Dati (punti, livello, serie, traguardi, stelle)'];
 // Giocatori:  A nome utente, B categoria, C stato, D richiesta il, E approvato il, F scade il, G ultimo accesso, H sessioni, I minuti, J dispositivi, K note, L PIN codificato
 const H_P = ['Nome utente','Categoria','Stato','Richiesta il','Approvato il','Scade il','Ultimo accesso','Sessioni','Minuti totali','Dispositivi','Note','PIN (codificato)'];
 // Istruttori: A chiave, B nome, C cognome, D stato, E richiesta il, F attivo dal, G scade il, H ultimo accesso, I stanze aperte, J note, K PIN codificato, L token
@@ -27,7 +28,7 @@ function doPost(e){
     const q = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     const admin = ADMIN_KEY !== 'CAMBIA-QUESTA-PAROLA' && q.key === ADMIN_KEY;
     const A = {
-      hello: hello_, session: session_, roomReq: roomReq_, roomStat: roomStat_, instReg: instReg_, instCheck: instCheck_,
+      hello: hello_, session: session_, progGet: progGet_, progPut: progPut_, roomReq: roomReq_, roomStat: roomStat_, instReg: instReg_, instCheck: instCheck_,
     };
     const ADM = { admin: adminList_, setPlayer: setPlayer_, setInst: setInst_, setRoom: setRoom_, setOpt: setOpt_ };
     if (A[q.a]) return out_(A[q.a](q));
@@ -67,6 +68,25 @@ function session_(q){
     if (r){ ps.getRange(r, 8).setValue((Number(ps.getRange(r, 8).getValue()) || 0) + 1); ps.getRange(r, 9).setValue(Math.round(((Number(ps.getRange(r, 9).getValue()) || 0) + min)*10)/10); ps.getRange(r, 7).setValue(new Date()); }
   }
   return { ok:true, n:list.length };
+}
+
+// ======================= PROGRESSI (stessi su tutti i dispositivi) =======================
+function playerOk_(q){
+  const user = clean_(q.user, 14), pin = pin_(q.pin); if (!user || pin.length < 4) return null;
+  const sh = sheet_(SH_P, H_P), r = findRow_(sh, user); if (!r) return null;
+  const ph = String(sh.getRange(r, 12).getValue()); return ph && ph === hash_('p|' + user.toLowerCase() + '|' + pin) ? user : null;
+}
+function progGet_(q){
+  const user = playerOk_(q); if (!user) return { ok:false, err:'pin' };
+  const sh = sheet_(SH_G, H_G), r = findRow_(sh, user);
+  return { ok:true, data: r ? String(sh.getRange(r, 3).getValue() || '') : '' };
+}
+function progPut_(q){
+  const user = playerOk_(q); if (!user) return { ok:false, err:'pin' };
+  const data = String(q.data || '').slice(0, 45000);                    // limite di una cella: 50.000 caratteri
+  const sh = sheet_(SH_G, H_G), r = findRow_(sh, user);
+  if (r){ sh.getRange(r, 2).setValue(new Date()); sh.getRange(r, 3).setValue(data); } else sh.appendRow([user, new Date(), data]);
+  return { ok:true };
 }
 
 // ======================= ISTRUTTORI =======================

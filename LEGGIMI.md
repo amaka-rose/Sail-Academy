@@ -1,4 +1,4 @@
-# Sail Academy – versione 1.5.2
+# Sail Academy – versione 1.6
 
 Gioco didattico di regata per la vela preagonistica. Si gioca su tablet, PC e telefono (meglio in orizzontale). È un file unico, `index.html`, e non serve installare niente.
 
@@ -36,6 +36,13 @@ Il pacchetto `Sail Academy-1.0.zip` contiene tutto ciò che serve. La procedura 
 | Vista timoniere / prodiere | 👁 o tocco sulla finestrella | I |
 | Giro di penalità | FAI IL GIRO | P |
 | Vista | Panoramica, ＋, － | V, +, − |
+
+## Novità 1.6 – progressi su tutti i dispositivi
+- **Con il registro attivo** (nome utente + PIN): punti, livello, serie 🔥, salvagenti, traguardi, stelle delle missioni e numero di regate vengono salvati nel Foglio Google, nel foglio **Progressi**. Si ritrovano entrando con lo stesso nome e PIN su qualsiasi telefono, tablet o PC. L'aggiornamento è automatico, pochi secondi dopo ogni cambiamento.
+- **Senza registro**: in 🏆 Classifica → *I miei progressi* → **📲 I tuoi progressi su un altro dispositivo** c'è un **QR** (e un link da condividere). Inquadrandolo con l'altro dispositivo, i progressi dei due si uniscono.
+- **Come si uniscono:** si tiene il meglio di ciascun dispositivo (punti più alti, serie più recente, tutti i traguardi, le stelle migliori), senza contare due volte gli stessi punti.
+- Non vengono trasferiti i "fantasmi" del cronometro: restano sul dispositivo dove sono stati registrati.
+- **Per l'amministratore:** lo script del Foglio è aggiornato. Incolla il nuovo `registro/Codice.gs` e pubblica una **nuova versione** del deployment (vedi REGISTRO.md, punto 5).
 
 ## Correzione 1.5.2 – barche più realistiche
 - **Vista dall'alto**: scafi bianchi con la falchetta (il bordo) e una fascia sulla vela nel colore del giocatore, timone e barra che si muovono con i comandi, persone in scala reale.

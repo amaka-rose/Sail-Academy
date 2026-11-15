@@ -39,6 +39,7 @@ Funziona tutto gratis: il Foglio Google è nel tuo Drive, lo script gira sul tuo
 - **Istruttori**: richieste con scelta del periodo (1 settimana … 1 anno). Puoi **revocare** con effetto immediato, riattivare, cambiare la scadenza e azzerare il PIN. C'è anche il vecchio "pass a link", per chi non usa il registro.
 - **Statistiche**: minuti di gioco al giorno nelle ultime 2 settimane, i più assidui e le ultime sessioni.
 - **Alla scadenza** il giocatore torna "in attesa" e ti richiede l'ok. Gli istruttori scaduti o revocati non possono più creare stanze.
+- **Progressi dei giocatori**: il foglio *Progressi* tiene punti, livello, serie, traguardi e stelle di ciascun nome utente. Così i ragazzi li ritrovano su qualsiasi dispositivo.
 - **Dal Foglio** puoi fare tutto anche a mano, cambiando la colonna *Stato*: APPROVATO, BLOCCATO, ATTIVO, REVOCATO.
 
 ## 5. Aggiornare lo script in futuro

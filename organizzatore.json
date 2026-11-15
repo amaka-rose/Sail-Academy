@@ -1,0 +1,10 @@
+{
+  "app": "Sail Academy",
+  "publicKey": {
+    "kty": "EC",
+    "crv": "P-256",
+    "x": "CHKrEcXkHKDJY2wpI2F0rH4aCchl4Hib04tUDexFNtc",
+    "y": "QS1K0FyKgjw0_RhgLQcx_d_xRhDaoLs4Wu5lCFSZZE4"
+  },
+  "registro": "https://script.google.com/macros/s/AKfycbyscpxYubYyda-jJYpDK9xwoA_Pw78pUYwBvNu965Qa3niydwPJOS93Zuv0EPcNIZM4jA/exec"
+}

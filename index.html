@@ -314,7 +314,7 @@ table.lg tr.me{ background:#fff6d6; }
     <button class="btn ok" id="goSchool" data-t="goSchool"></button>
     <button class="btn alt" id="goTv" data-t="goTv"></button>
   </div>
-  <div class="foot"><span data-t="foot"></span><br><a href="#" id="goAbout" style="color:inherit;font-weight:700">Sail Academy 1.5.2 · <span data-t="aboutL"></span></a> · <a href="#" id="goOrg" style="color:inherit;font-weight:700">⚙️ <span data-t="orgL"></span></a> · <a href="#" id="goInstr" style="color:inherit;font-weight:700">🧑‍🏫 <span data-t="instrL"></span></a><br><span id="orgStatus"></span></div>
+  <div class="foot"><span data-t="foot"></span><br><a href="#" id="goAbout" style="color:inherit;font-weight:700">Sail Academy 1.6 · <span data-t="aboutL"></span></a> · <a href="#" id="goOrg" style="color:inherit;font-weight:700">⚙️ <span data-t="orgL"></span></a> · <a href="#" id="goInstr" style="color:inherit;font-weight:700">🧑‍🏫 <span data-t="instrL"></span></a><br><span id="orgStatus"></span></div>
 </div></div>
 
 <!-- ======================= MISSIONI ======================= -->
@@ -5554,7 +5554,37 @@ const Progress = {
     if (p.week.k !== weekKey()){ p.lastWeek = p.week; p.week = { k: weekKey(), xp: 0 }; }
     return p;
   },
-  save(){ Store.set({ prog: App.prefs.prog }); },
+  save(){ Store.set({ prog: App.prefs.prog }); this.touch(); },
+  // ---- progressi uguali su tutti i dispositivi ----
+  touch(){ this.p.t = Date.now(); clearTimeout(this._syncT); this._syncT = setTimeout(() => { if (typeof Registry !== 'undefined') Registry.pushProg(); }, 4000); },
+  exportData(){
+    const p = this.p;
+    return { v: 1, t: p.t || Date.now(), xp: p.xp, goal: p.goal, days: p.days, streak: p.streak, best: p.best, last: p.last, freezes: p.freezes,
+             badges: p.badges, cnt: p.cnt, week: p.week, lastWeek: p.lastWeek || null, stars: App.prefs.stars || {}, races: App.prefs.races || 0 };
+  },
+  // unisce i progressi di un altro dispositivo: si tiene il meglio di ciascuno, senza contare due volte
+  merge(d){
+    if (!d || typeof d !== 'object') return false;
+    const p = this.p, newer = (d.t || 0) > (p.t || 0);
+    p.xp = Math.max(p.xp || 0, d.xp || 0);
+    for (const [k, v] of Object.entries(d.days || {})) p.days[k] = Math.max(p.days[k] || 0, v || 0);
+    const ks = Object.keys(p.days).sort(); while (ks.length > 70) delete p.days[ks.shift()];
+    if (d.week && d.week.k === p.week.k) p.week.xp = Math.max(p.week.xp, d.week.xp || 0);
+    else if (d.week && d.week.k > p.week.k){ p.lastWeek = p.week; p.week = d.week; }
+    if (d.last && (!p.last || d.last > p.last || (d.last === p.last && (d.streak || 0) > p.streak))){ p.last = d.last; p.streak = d.streak || 0; p.freezes = d.freezes || 0; }
+    p.best = Math.max(p.best || 0, d.best || 0, p.streak || 0);
+    for (const [k, v] of Object.entries(d.badges || {})) if (!p.badges[k] || v < p.badges[k]) p.badges[k] = v;
+    for (const [k, v] of Object.entries(d.cnt || {})) p.cnt[k] = Math.max(p.cnt[k] || 0, v || 0);
+    if (newer && d.goal) p.goal = d.goal;
+    const st = Object.assign({}, App.prefs.stars || {}); for (const [k, v] of Object.entries(d.stars || {})) st[k] = Math.max(st[k] || 0, v || 0);
+    App.prefs.stars = st; App.prefs.races = Math.max(App.prefs.races || 0, d.races || 0);
+    p.t = Math.max(p.t || 0, d.t || 0);
+    Store.set({ prog: p, stars: st, races: App.prefs.races });
+    renderProgressCard();
+    return true;
+  },
+  packCode(){ const j = JSON.stringify(this.exportData()); return btoa(unescape(encodeURIComponent(j))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); },
+  unpackCode(c){ c = c.replace(/-/g,'+').replace(/_/g,'/'); while (c.length % 4) c += '='; return JSON.parse(decodeURIComponent(escape(atob(c)))); },
   level(xp = this.p.xp){ let L = 1; while (xp >= 25*L*(L+1)) L++; return L; },        // 50, 150, 300, 500, 750…
   levelFloor(L){ return 25*(L-1)*L; },
   title(L){ const t = LEVELS[Math.min(L, LEVELS.length) - 1]; return tx(t[0], t[1]); },
@@ -5695,6 +5725,10 @@ function openLeague(tab = 'week'){
       <h2>${tx('Ultime 4 settimane','Last 4 weeks')}</h2><div class="cal">${cells.join('')}</div>
       <p class="hint">${tx('Verde: obiettivo raggiunto · azzurro: hai giocato un po’','Green: goal reached · blue: some play')}</p>
       <p>🔥 ${tx('Serie attuale','Current streak')}: <b>${P.streakNow()}</b> · ${tx('record','best')}: <b>${p.best}</b> · 🛟 ${tx('salvagenti','freezes')}: <b>${p.freezes}</b>/2</p>
+      <h2>📲 ${tx('I tuoi progressi su un altro dispositivo','Your progress on another device')}</h2>
+      <p class="hint">${typeof Registry !== 'undefined' && Registry.on() && Registry.approved() ? '✅ ' + tb('Con il tuo nome utente e PIN i progressi si salvano da soli e li ritrovi su ogni dispositivo.','With your username and PIN your progress is saved automatically and you find it on every device.') : tb('Inquadra il QR con l’altro telefono o tablet (oppure manda il link): i progressi dei due dispositivi si uniscono, tenendo il meglio di ciascuno.','Scan the QR with the other phone or tablet (or send the link): the progress of both devices is merged, keeping the best of each.')}</p>
+      <div style="text-align:center" id="lgQR"></div>
+      <button class="btn alt" id="lgShare">📤 ${tx('Condividi / copia il link dei progressi','Share / copy the progress link')}</button>
       <label>${tx('Obiettivo giornaliero','Daily goal')}</label>
       <select id="lgGoal">${[[15, tx('Tranquillo','Easy')], [30, tx('Normale','Regular')], [50, tx('Impegnato','Serious')], [80, tx('Agonista','Racer')]].map(([v, t]) => `<option value="${v}"${p.goal === v ? ' selected' : ''}>${t} · ${v} XP</option>`).join('')}</select>
       <h2>${tx('Come si guadagnano i punti','How to earn points')}</h2>
@@ -5718,6 +5752,9 @@ function openLeague(tab = 'week'){
   if (tab === 'me'){
     renderProgressCard($('progCard2'));
     $('lgGoal').onchange = () => { p.goal = +$('lgGoal').value; P.save(); openLeague('me'); };
+    const link = location.origin + location.pathname + '#prog=' + P.packCode();
+    if (link.length < 2300 && typeof TV !== 'undefined') $('lgQR').innerHTML = TV.qrSvg(link, 220);
+    $('lgShare').onclick = async () => { try { if (navigator.share) await navigator.share({ title: 'Sail Academy', text: tx('I miei progressi di Sail Academy','My Sail Academy progress'), url: link }); else { await navigator.clipboard.writeText(link); Progress.toast([tx('Link copiato','Link copied')]); } } catch(e){} };
   }
   show('league');
 }
@@ -6175,9 +6212,19 @@ const Registry = {
     this.me = { user, pin, status: j.status, exp: j.exp || null, t: Date.now() };
     this.roomApproval = j.roomApproval;
     if (App.prefs.nick !== user){ App.prefs.nick = user; Store.set({ nick: user }); if ($('nick')) $('nick').value = user; }
+    if (j.status === 'APPROVATO') this.pullProg();
     return j.status;
   },
   logout(){ this.me = null; renderOrgStatus(); openGate(); },
+  // progressi sul registro: scaricati all'accesso, aggiornati dopo ogni cambiamento
+  async pullProg(){
+    const m = this.me; if (!this.on() || !m || m.status !== 'APPROVATO') return;
+    try { const j = await this.call('progGet', { user: m.user, pin: m.pin }); if (j.data){ Progress.merge(JSON.parse(j.data)); } this._pulled = true; await this.pushProg(true); } catch(e){}
+  },
+  async pushProg(force){
+    const m = this.me; if (!this.on() || !m || m.status !== 'APPROVATO' || (!this._pulled && !force)) return;
+    try { await this.call('progPut', { user: m.user, pin: m.pin, data: JSON.stringify(Progress.exportData()) }); } catch(e){}
+  },
   async start(){
     this.url = Org.reg || null;
     if (!this.on()) return;
@@ -6418,6 +6465,15 @@ function openTvMenu(msg){
     if (App.net && App.online){ App.net.toHost({ t:'role', role:'spectator', crewOf:null, crewRole:null }); TV.set(true); }
   };
   show('tvMenu');
+}
+
+// ---------------- link dei progressi #prog=... ----------------
+function handleProgHash(){
+  const m = location.hash.match(/#prog=([\w-]+)/); if (!m) return;
+  history.replaceState(null, '', location.pathname + location.search);
+  try { const d = Progress.unpackCode(m[1]); const before = Progress.p.xp; Progress.merge(d); Progress.save();
+    setTimeout(() => Progress.toast(['📲 ' + tx(`Progressi uniti: ${Progress.p.xp} XP (prima ${before})`, `Progress merged: ${Progress.p.xp} XP (was ${before})`)]), 800);
+  } catch(e){ setTimeout(() => Progress.toast(['❌ ' + tx('Link dei progressi non valido','Invalid progress link')]), 800); }
 }
 
 // ---------------- link di invito #join=CODICE ----------------
@@ -7889,7 +7945,7 @@ function positionOf(R, b){
 // =====================================================================
 //  CLASSIFICA
 // =====================================================================
-const APP_VERSION = '1.5.2';
+const APP_VERSION = '1.6';
 function renderAbout(){
   $('aboutBody').innerHTML = `
   <h2>Sail Academy ${APP_VERSION}</h2>
@@ -8108,7 +8164,8 @@ window.addEventListener('load', () => Org.init());
 window.addEventListener('hashchange', () => { if (location.hash.startsWith('#pass=')) Org.init(); });
 $('goTv').onclick = () => { if (!Registry.allowed()){ openGate(); return; } openTvMenu(); };
 $('tvBack').onclick = () => show('menu');
-window.addEventListener('load', () => setTimeout(handleJoinHash, 300));
+window.addEventListener('load', () => setTimeout(() => { handleJoinHash(); handleProgHash(); }, 300));
+window.addEventListener('hashchange', () => { if (location.hash.startsWith('#prog=')) handleProgHash(); });
 window.addEventListener('hashchange', () => { if (location.hash.startsWith('#join=')) handleJoinHash(); });
 $('goAbout').onclick = e => { e.preventDefault(); renderAbout(); show('about'); };
 $('aboutBack').onclick = () => show('menu');
